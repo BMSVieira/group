@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Socket.io Demo</title>
+      <meta charset="utf-8">
+		<link rel="stylesheet" href="styles.css">
+   </head>
+   <body>
+		 <h1>Socket.io Demo</h1>	 
+		 <p id="buttonCount">The button has been clicked 0 times.</p>
+
+		  <video id="video" width="320" height="240" controls autoPlay muted>
+			<source src="https://mooviejs.com/trailer/trailer.mp4" type="video/mp4">
+			Your browser does not support the video tag.
+		  </video> 
+
+		 <button onclick="buttonClicked()">Click me</button>
+		 <script src="/socket.io/socket.io.js"></script>
+		 <script>
+			
+			 var socket = io.connect();
+			 
+				 const video = document.getElementById('video');
+
+				// SYNC VIDEO #################################################
+				socket.on('syncVideo', (currentTime) => {
+				video.currentTime = currentTime;
+				});
+
+				// PLAY VIDEO #################################################
+				video.addEventListener('play', () => {
+				socket.emit('play', video.currentTime);
+				});
+
+				// PAUSE VIDEO ################################################
+				video.addEventListener('pause', () => {
+				socket.emit('pause', video.currentTime);
+				});
+
+				// SYNC VIDEO #################################################
+				let previousTime = 0;
+				video.addEventListener('timeupdate', () => {
+				const currentTime = video.currentTime;
+				if (Math.abs(currentTime - previousTime) > 2) { socket.emit('seek', video.currentTime);}
+						previousTime = currentTime;
+				});
+
+
+
+				
+				// Receive commands from the server to control video playback
+				socket.on('play', () => {
+				video.play();
+				});
+
+				socket.on('pause', () => {
+				video.pause();
+				});
+
+				socket.on('seek', (time) => {
+				video.currentTime = time;
+				}); 
+
+				socket.on('catchUp', (time) => {
+					socket.emit('seek', video.currentTime);
+				}); 
+
+				
+		</script>
+   </body>
+</html>
