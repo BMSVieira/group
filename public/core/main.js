@@ -73,11 +73,12 @@
     // ------------------------------------------------------------------
     socket.on('receiveMessage', (sender, message) => {  
 
-        if(sender != utils.getUsername())
-        { 
+
             utils.writeReceivedMessage(sender, message);
             utils.scrollChatBottom();
-        }
+      
+
+        
 
     });
     
