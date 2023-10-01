@@ -124,25 +124,47 @@ function userQuit(channel, nick, reason, message)
     Escreve os users
     ####################################################################
 */
-function writeUser(channel, nick)
+function writeMessageMine(message)
 {
 
-    let template = `                                    
-     <li class="tyn-aside-item js-toggle-main">
-      <div class="tyn-media-group">
-         <div class="tyn-media tyn-size-sm">
-            <img src="https://digimedia.web.ua.pt/wp-content/uploads/2017/05/default-user-image.png" alt="">
-         </div>
-         <div class="tyn-media-col">
-            <div class="tyn-media-row">
-            <h6 class="name">`+nick+`</h6>
-            </div>
-         </div>
-      </div>
-      </li>`;
+    let template = `
+    <div class="d-flex flex-row justify-content-end">
+        <div>
+        <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">`+message+`</p>
+        <p class="small smllhours me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:15</p>
+        </div>
+    </div>`;
 
-    document.getElementById("lista_nicks_"+channel).insertAdjacentHTML("beforeend", template);
+    document.getElementById("chatbody").insertAdjacentHTML('beforeend', template);
 }
 
+/* 
+    Escreve os users
+    ####################################################################
+*/
+function writeReceivedMessage(sender, message)
+{
+    let template = `
+    <div class="d-flex flex-row justify-content-start mb-4">
+        <div>
+        <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #05131e;"><b>`+sender+`:</b><br>`+message+`</p>
+        <p class="small smllhours ms-3 mb-3 rounded-3 text-muted">00:13</p>
+        </div>
+    </div>`;
+
+    document.getElementById("chatbody").insertAdjacentHTML('beforeend', template);
+}
+
+/* 
+    Scroll chat to bottom
+    ####################################################################
+*/
+function scrollChatBottom()
+{
+    const chatbox = document.getElementById("chatbody");
+    chatbox.scrollTop = chatbox.scrollHeight;
+}
+
+
 // Faz o export dos modulos
-export default { userJoin, userQuit, extractValueFromURL, updateInfo, getUsername};
+export default {scrollChatBottom, userJoin, userQuit, extractValueFromURL, updateInfo, getUsername, writeMessageMine, writeReceivedMessage};

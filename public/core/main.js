@@ -8,10 +8,24 @@
     const roomID = utils.extractValueFromURL();
     var realRoomID = "";
     document.getElementById('setUsernameButton').addEventListener('click', function() { setUsername(); });
+    document.getElementById('sendMessage').addEventListener('click', function() { sendMessage(); });
+
+    function sendMessage()
+    {
+        const chat_input = document.getElementById("chat_input");
+        const chatMessage = chat_input.value;
+        if(chatMessage)
+        {
+            utils.writeMessageMine(chatMessage);
+            chat_input.value = "";
+            utils.scrollChatBottom();
+            chat_input.focus();
+            socket.emit('sendMessage', realRoomID, utils.getUsername(), chatMessage);
+        }
+    }
 
     // Junta-se ou Cria uma room nova caso não encontre
     const joinRoom = (roomID) => {
-        alert("ola"); 
         socket.emit('createOrJoinRoom', roomID);
     };
     
@@ -49,21 +63,33 @@
     video.addEventListener('pause', () => {
         socket.emit('pause', realRoomID, video.currentTime);
     });
-
     socket.on('pause', (roomID) => {  video.pause();  });
+
+    // Utilizador juntou-se a sala
+    // ------------------------------------------------------------------
     socket.on('UserJoinedRoom', (username) => {   utils.userJoin("<b>"+username+"</b> Joined room");  });
+
+    // Recebeu uma nova mensagem de um utilizador
+    // ------------------------------------------------------------------
+    socket.on('receiveMessage', (sender, message) => {  
+
+        if(sender != utils.getUsername())
+        { 
+            utils.writeReceivedMessage(sender, message);
+            utils.scrollChatBottom();
+        }
+
+    });
     
     // Play Video
     // ------------------------------------------------------------------
     video.addEventListener('play', () => {
         socket.emit('play', realRoomID);
     });
-        
     socket.on('play', (roomID) => { video.play(); });
 
     // Seek Video
     // ------------------------------------------------------------------
-
     let previousTime = 0;
     video.addEventListener('timeupdate', () => {
         const currentTime = video.currentTime;
@@ -77,8 +103,10 @@
 
     // Quando um utilizador entra, atualiza o video para o tempo atual
     // ------------------------------------------------------------------
-
     socket.on('catchUp', (latestTime) => { video.currentTime = latestTime; } ); 
+
+        // Quando um utilizador entra, atualiza o video para o tempo atual
+    // ------------------------------------------------------------------
     socket.on('updateInfo', (roomID) => { 
         utils.updateInfo(roomID, "roominfo");
     }); 
