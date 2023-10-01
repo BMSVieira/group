@@ -1,6 +1,6 @@
 
     import utils from './utils.js';
-
+    localStorage.removeItem('username');
     var socket = io.connect();
     const video = document.getElementById('video');
 
