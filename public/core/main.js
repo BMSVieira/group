@@ -1,126 +1,84 @@
 
-import utils from './utils.js';
+    import utils from './utils.js';
 
-var socket = io.connect();
-const video = document.getElementById('video');
+    var socket = io.connect();
+    const video = document.getElementById('video');
 
-// Function to extract the number from the URL
-function extractValueFromURL() {
+    // Variaveis & Configs
+    const roomID = utils.extractValueFromURL();
+    var realRoomID = "";
+    document.getElementById('setUsernameButton').addEventListener('click', function() { setUsername(); });
 
-    const pathname = window.location.pathname;
-    const parts = pathname.split('=');
-
-    if (parts.length === 2 && parts[1].trim() !== '') {
-        const extractedValue = parts[1];
-        const numericValue = Number(extractedValue);
-        if (!isNaN(numericValue)) {
-            return numericValue;
-        } else {
-            return extractedValue;
-        }
-    } else {
-        return null;
-    }
-}
-
-    // Call the function to extract the room ID
-    const roomID = extractValueFromURL();
-
-    // Function to handle joining a room based on an invitation ID
+    // Junta-se ou Cria uma room nova caso não encontre
     const joinRoom = (roomID) => {
+        alert("ola"); 
         socket.emit('createOrJoinRoom', roomID);
     };
-  
-  // Example: Join a specific room by providing an invitation ID
-  const invitationID = 'your_invitation_id_here';
-  joinRoom(roomID);
-  
-  // Listen for the server's response
-  socket.on('joinedRoom', (roomID) => {
-    console.log(`Joined room with ID: ${roomID}`);
-    // You can perform actions related to joining the room here
-  });
-  
-  socket.on('createdRoom', (roomID) => {
-    console.log(`Created new room with ID: ${roomID}`);
-    // You can perform actions related to creating the room here
-  });
-  
-  socket.on('roomNotFound', (roomID) => {
-    console.log(`Room with ID ${roomID} not found.`);
-    // You can handle the case where the room does not exist here
-  });
+    
+    // Entrar numa Room
+    function setUsername()  { let name = document.getElementById("username_input").value; if(name) {  localStorage.setItem('username', name); checkUserName(); }}
+    function checkUserName()
+    {
+        return new Promise((resolve, reject) => {
+            var storedVariable = localStorage.getItem('username');
+            if (storedVariable) { 
+                usernameModal.hide(); 
+                utils.updateInfo(utils.getUsername(), "username"); 
+                resolve(); 
+                socket.emit('UserJoinedRoom', realRoomID, utils.getUsername());
+            } else {  usernameModal.show(); return false; }
+        });
+    }
 
+    checkUserName().then(joinRoom(roomID));
 
+    // Entrou numa room
+    socket.on('joinedRoom', (roomID) => {
+        console.log(`Joined room with ID: ${roomID}`);
+        realRoomID = roomID;
+    });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Play video
-    socket.on('play', (roomID) => {
-    video.play();
+    // Room criado
+    socket.on('createdRoom', (roomID) => {
+        console.log(`Created new room with ID: ${roomID}`);
+        realRoomID = roomID;
     });
 
     // Pause Video
-    socket.on('pause', (roomID) => {
-    video.pause();
+    // ------------------------------------------------------------------
+    video.addEventListener('pause', () => {
+        socket.emit('pause', realRoomID, video.currentTime);
     });
 
+    socket.on('pause', (roomID) => {  video.pause();  });
+    socket.on('UserJoinedRoom', (username) => {   utils.userJoin("<b>"+username+"</b> Joined room");  });
+    
+    // Play Video
+    // ------------------------------------------------------------------
+    video.addEventListener('play', () => {
+        socket.emit('play', realRoomID);
+    });
+        
+    socket.on('play', (roomID) => { video.play(); });
+
     // Seek Video
-    socket.on('seek', (time) => {
-    video.currentTime = time;
-    }); 
+    // ------------------------------------------------------------------
 
-    // Quando um utilizador entra, faz sync com o currentTime
-    socket.on('catchUp', (roomID) => {
-        socket.emit('seek', video.currentTime);
-    }); 
-
-// #############################################################################################################
-// Event Listeners
-// #############################################################################################################
-
-    // Catchup Video
-    socket.on('syncVideo', (currentTime) => {
-        video.currentTime = currentTime;
-        });
-    
-        // Play Video
-        video.addEventListener('play', () => {
-        socket.emit('play', video.currentTime);
-        });
-    
-        // Pause Video
-        video.addEventListener('pause', () => {
-        socket.emit('pause', video.currentTime);
-        });
-    
-        // Sync Video
-        let previousTime = 0;
-        video.addEventListener('timeupdate', () => {
+    let previousTime = 0;
+    video.addEventListener('timeupdate', () => {
         const currentTime = video.currentTime;
-        if (Math.abs(currentTime - previousTime) > 2) { socket.emit('seek', video.currentTime);}
-                previousTime = currentTime;
-        });
+        if (Math.abs(currentTime - previousTime) > 2) { 
+            socket.emit('seek', realRoomID, video.currentTime);
+        }
+        previousTime = currentTime;
+    });
+
+    socket.on('seek', (time) => { video.currentTime = time; }); 
+
+    // Quando um utilizador entra, atualiza o video para o tempo atual
+    // ------------------------------------------------------------------
+
+    socket.on('catchUp', (latestTime) => { video.currentTime = latestTime; } ); 
+    socket.on('updateInfo', (roomID) => { 
+        utils.updateInfo(roomID, "roominfo");
+    }); 

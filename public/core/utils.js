@@ -1,5 +1,65 @@
 
 /* 
+    Retirar valor do URL
+    ####################################################################
+*/
+function updateInfo(roomID, type) {
+
+    switch (type) {
+        case 'username':
+            document.getElementById("usernameRoom").value = getUsername();
+          break;
+        case 'roominfo':
+            document.getElementById("inviteRoom").value = "localhost:3000/room="+roomID+"";
+            document.getElementById("idRoom").value = ""+roomID+"";
+          break;
+        default:
+      }
+      
+}
+
+/* 
+    Retirar valor do URL
+    ####################################################################
+*/
+function extractValueFromURL() {
+
+    const pathname = window.location.pathname;
+    const parts = pathname.split('=');
+
+    if (parts.length === 2 && parts[1].trim() !== '') {
+        const extractedValue = parts[1];
+        const numericValue = Number(extractedValue);
+        if (!isNaN(numericValue)) {
+            return numericValue;
+        } else {
+            return extractedValue;
+        }
+    } else {
+        return null;
+    }
+}
+
+/* 
+    Set Username
+    ####################################################################
+*/
+function setUsername()
+{
+  let name = document.getElementById("username_input").value;
+  if(name) {  localStorage.setItem('username', name); checkUserName(); }
+}
+
+/* 
+    Get Username
+    ####################################################################
+*/
+function getUsername()
+{
+  return localStorage.getItem('username');
+}
+
+/* 
     Nova mensagem
     ####################################################################
 */
@@ -25,7 +85,7 @@ function newMessage(from, to, message)
     User juntou-se
     ####################################################################
 */
-function userJoin(nick, message)
+function userJoin(message)
 {
 
     let template = `
@@ -35,7 +95,6 @@ function userJoin(nick, message)
             <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:15</p>
         </div>
     </div>`;
-
     document.getElementById("chatbody").insertAdjacentHTML('beforeend', template);
 }
 
@@ -86,4 +145,4 @@ function writeUser(channel, nick)
 }
 
 // Faz o export dos modulos
-export default { userJoin, userQuit };
+export default { userJoin, userQuit, extractValueFromURL, updateInfo, getUsername};

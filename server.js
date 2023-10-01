@@ -6,12 +6,15 @@ var io = require('socket.io')(server);
 
 // Create a data structure to track existing rooms
 const rooms = new Map();
+var latestTime = 0;
+var roomID = ""
 
 app.use(express.static(__dirname + '/public')); 
-//redirect / to our index.html file
-app.get('/room=:roomID', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html'); // Adjust the path to your HTML file as needed
-});
+
+// Redirect / to our index.html file
+app.get('/', (req, res) => { res.sendFile(__dirname + '/public/index.html'); });
+app.get('/room=:roomID', (req, res) => {const roomID = req.params.roomID; res.sendFile(__dirname + '/public/room.html'); });
+app.get('/room', (req, res) => { res.sendFile(__dirname + '/public/room.html'); });
 
 //start our web server and socket.io server listening
 server.listen(3000, function(){
@@ -20,35 +23,57 @@ server.listen(3000, function(){
 
 const generateRoomID = () => {
   // Generate a random alphanumeric room ID (you can use a more robust method)
-  return Math.random().toString(36).substring(2, 8);
+  return Math.random().toString(36).substring(2, 20);
 };
 
 io.on('connection', (socket) => {
-  socket.on('createOrJoinRoom', (roomID) => {
 
+  socket.on('createOrJoinRoom', (roomID) => {
     if (rooms.has(roomID)) {
 
-      // Room already exists; join the existing room
+      // Existe uma room, junta-se
       socket.join(roomID);
       rooms.get(roomID).push(socket.id);
-
-      // Emit a message or event to indicate joining
+      // Emite mensagem de entrada
       socket.emit('joinedRoom', roomID);
 
-    } else {
+    } else { // Caso não exista
 
-      const roomID = generateRoomID(); // Generate a room ID
-
-      // Room does not exist; create a new room
+      roomID = generateRoomID(); 
+      // Criar room nova
       rooms.set(roomID, [socket.id]);
-
-      // Join the room
+      // Entrar
       socket.join(roomID);
-
-      // Emit a message or event to indicate creation
+      // Emite mensagem de entrada
       socket.emit('createdRoom', roomID);
     }
+
+    io.to(roomID).emit('catchUp', latestTime);
+    io.to(roomID).emit('updateInfo', roomID);
+
   });
+
+  // Play video
+  socket.on('play', (roomID) => {
+    io.to(roomID).emit('play');
+  });
+
+  // Pause Video
+  socket.on('pause', (roomID, currentTime) => {
+    io.to(roomID).emit('pause', currentTime);
+  });
+
+  // Seek Video
+  socket.on('seek', (roomID, currentTime) => {
+    io.to(roomID).emit('seek', currentTime);
+    latestTime = currentTime;
+  });
+
+  // User Joined Room
+  socket.on('UserJoinedRoom', (roomID, username) => {
+    io.to(roomID).emit('UserJoinedRoom', username);
+  });
+
   socket.on('disconnect', () => {
     // Remove the user from all rooms when they disconnect
     const socketRooms = io.sockets.adapter.rooms;
@@ -62,42 +87,3 @@ io.on('connection', (socket) => {
     }
   });
 });
-
-
-
-
-/*
-// IO Connection
-io.on('connection', function(client) {  
-
-  console.log('A user connected');
-  client.broadcast.emit('catchUp', latestTime);
-  // Utilizador Entrou
-  client.broadcast.emit('newUser', "NomeUtilizador");
-
-  // Handle play event
-  client.on('play', (currentTime) => {
-    // Broadcast the play event and current time to all connected clients
-    client.broadcast.emit('play', latestTime);
-  });
-
-  // Handle pause event
-  client.on('pause', (currentTime) => {
-    // Broadcast the pause event and current time to all connected clients
-    client.broadcast.emit('pause', currentTime);
-  });
-
-  // Handle seek event
-  client.on('seek', (currentTime) => {
-    // Broadcast the seek event and current time to all connected clients
-    client.broadcast.emit('seek', currentTime);
-    latestTime = currentTime;
-  });
-
-  client.on('disconnect', () => {
-    console.log('A user disconnected');
-  });
-  
-});
-
-*/
