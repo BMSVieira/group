@@ -67,14 +67,23 @@
 
     // Utilizador juntou-se a sala
     // ------------------------------------------------------------------
-    socket.on('UserJoinedRoom', (username) => {   utils.userJoin("<b>"+username+"</b> Joined room");  });
+    socket.on('UserJoinedRoom', (username) => {   utils.userJoin("<b>"+username+"</b> Joined room"); utils.scrollChatBottom(); });
+
+    // Utilizador desconectou-se
+    // ------------------------------------------------------------------
+    socket.on('UserDisconnected', () => {  utils.userQuit("Left room"); utils.scrollChatBottom(); });
+
 
     // Recebeu uma nova mensagem de um utilizador
     // ------------------------------------------------------------------
     socket.on('receiveMessage', (sender, message) => {  
 
+        if(sender != utils.getUsername())
+        {
             utils.writeReceivedMessage(sender, message);
             utils.scrollChatBottom();
+        }
+
     });
     
     // Play Video

@@ -102,22 +102,17 @@ function userJoin(message)
     User juntou-se
     ####################################################################
 */
-function userQuit(channel, nick, reason, message)
+function userQuit(message)
 {
 
-    let template = `                                    
-    <div class="tyn-reply-item incoming">
-    <div class="tyn-reply-bubble">
-       <div class="tyn-reply-text user_chat_name"> </div>
-    </div>
-    <div class="tyn-reply-group">
-       <div class="tyn-reply-bubble">
-          <div class="tyn-reply-text user_saiu"> `+nick+` saiu. </div>
-       </div>
-    </div>
- </div>`;
-
-    document.getElementById("canal_gay").insertAdjacentHTML("beforeend", template);
+    let template = `
+    <div class="d-flex flex-row justify-content-end">
+        <div>
+        <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary" style="background-color:#6c1717;">`+message+`</p>
+        <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:15</p>
+        </div>
+    </div>`;
+    document.getElementById("chatbody").insertAdjacentHTML('beforeend', template);
 }
 
 /* 

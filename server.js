@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
 
   });
 
-    // Seek Video
+    // Send Message
   socket.on('sendMessage', (roomID, sender, message) => {
     io.to(roomID).emit('receiveMessage', sender, message);
   });
@@ -81,14 +81,9 @@ io.on('connection', (socket) => {
 
   // Remove the user from all rooms when they disconnect
   socket.on('disconnect', () => {
-    const socketRooms = io.sockets.adapter.rooms;
-    for (const roomID of Object.keys(socketRooms)) {
-      if (rooms.has(roomID)) {
-        rooms.get(roomID).splice(rooms.get(roomID).indexOf(socket.id), 1);
-        if (rooms.get(roomID).length === 0) {
-          rooms.delete(roomID); // Remove the room if it's empty
-        }
-      }
-    }
+
+    io.to(roomID).emit('UserDisconnected');
+
   });
 });
+
