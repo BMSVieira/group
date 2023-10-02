@@ -73,13 +73,8 @@
     // ------------------------------------------------------------------
     socket.on('receiveMessage', (sender, message) => {  
 
-
             utils.writeReceivedMessage(sender, message);
             utils.scrollChatBottom();
-      
-
-        
-
     });
     
     // Play Video
