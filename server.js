@@ -53,6 +53,11 @@ io.on('connection', (socket) => {
 
   });
 
+  // Send Message
+  socket.on('changeSource', (roomID, url) => {
+    io.to(roomID).emit('changeSource', url);
+  });
+
     // Send Message
   socket.on('sendMessage', (roomID, sender, message) => {
     io.to(roomID).emit('receiveMessage', sender, message);
@@ -81,9 +86,7 @@ io.on('connection', (socket) => {
 
   // Remove the user from all rooms when they disconnect
   socket.on('disconnect', () => {
-
     io.to(roomID).emit('UserDisconnected');
-
   });
 });
 

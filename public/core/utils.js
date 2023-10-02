@@ -1,5 +1,23 @@
 
 /* 
+    Envia mensagem
+    ####################################################################
+*/
+function sendMessage(socket, realRoomID)
+{
+    const chat_input = document.getElementById("chat_input");
+    const chatMessage = chat_input.value;
+    if(chatMessage)
+    {
+        writeMessageMine(chatMessage);
+        chat_input.value = "";
+        scrollChatBottom();
+        chat_input.focus();
+        socket.emit('sendMessage', realRoomID, getUsername(), chatMessage);
+    }
+}
+
+/* 
     Retirar valor do URL
     ####################################################################
 */
@@ -38,16 +56,6 @@ function extractValueFromURL() {
     } else {
         return null;
     }
-}
-
-/* 
-    Set Username
-    ####################################################################
-*/
-function setUsername()
-{
-  let name = document.getElementById("username_input").value;
-  if(name) {  localStorage.setItem('username', name); checkUserName(); }
 }
 
 /* 
@@ -160,6 +168,36 @@ function scrollChatBottom()
     chatbox.scrollTop = chatbox.scrollHeight;
 }
 
+/* 
+    Set Username
+    ####################################################################
+*/
+function setUsername(socket, realRoomID)  { 
+    let name = document.getElementById("username_input").value;
+    if(name) {  
+        localStorage.setItem('username', name); checkUserName(socket, realRoomID);
+    }
+}
+
+/* 
+    Check Username
+    ####################################################################
+*/
+function checkUserName(socket, realRoomID)
+{
+    return new Promise((resolve, reject) => {
+        var storedVariable = localStorage.getItem('username');
+        if (storedVariable) { 
+            usernameModal.hide(); 
+            updateInfo(getUsername(), "username"); 
+            resolve(); 
+            socket.emit('UserJoinedRoom', realRoomID, getUsername());
+        } else {  usernameModal.show(); return false; }
+    });
+}
+
+   
+
 
 // Faz o export dos modulos
-export default {scrollChatBottom, userJoin, userQuit, extractValueFromURL, updateInfo, getUsername, writeMessageMine, writeReceivedMessage};
+export default {setUsername, checkUserName, sendMessage, scrollChatBottom, userJoin, userQuit, extractValueFromURL, updateInfo, getUsername, writeMessageMine, writeReceivedMessage};

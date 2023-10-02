@@ -91,7 +91,15 @@
   }
 }
 
-#chat2 .form-control {
+  .searchvideoselect
+  {
+    max-width: 18%;
+    background-color: #05131e!important;
+    border-color: #091a26!important;
+    color: white!important;
+  }
+
+  #chat2 .form-control {
   border-color: transparent;
   }
   
