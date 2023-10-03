@@ -63,6 +63,7 @@
     // ------------------------------------------------------------------
     socket.on('updateInfo', (roomID) => { 
         utils.updateInfo(roomID, "roominfo");
+        history.pushState(null, null, '/room='+roomID);
     }); 
 
     // #################################################################  

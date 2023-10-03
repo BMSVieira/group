@@ -127,6 +127,11 @@
   margin-top:15px;
 }
 
+.px-5 {
+  padding-right: 15px !important;
+  padding-left: 15px !important;
+}
+
 .smllhours
 {
   font-size:7pt!important;
@@ -1986,6 +1991,11 @@ progress {
   .mtop
   {
     margin-top:0px!important;
+  }
+
+  .px-5 {
+    padding-right: 15px !important;
+    padding-left: 15px !important;
   }
 
   .tabcontentmobile
@@ -7902,8 +7912,8 @@ textarea.form-control-lg {
 }
 
 .px-5 {
-  padding-right: 3rem !important;
-  padding-left: 3rem !important;
+  padding-right: 3rem;
+  padding-left: 3rem;
 }
 
 .py-0 {
