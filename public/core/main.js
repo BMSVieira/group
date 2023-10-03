@@ -27,11 +27,7 @@
 
     // Change source
     socket.on('changeSource', (videotype, videoID, video) => {  
-      console.log("olaaa");
-      console.log(videotype);
-      console.log(videoID);
-      console.log(video);
-
+     
       switch (videotype) {
         case 'mp4':
           video.source = {

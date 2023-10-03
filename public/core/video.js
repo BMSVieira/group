@@ -97,6 +97,7 @@ function playvideo(socket, videotype, videoID, video, realRoomID)
           }
         ],
       };
+
       socket.emit('changeSource', videotype, videoID, video, realRoomID);
     break;
     case 'youtube':
@@ -118,4 +119,4 @@ function playvideo(socket, videotype, videoID, video, realRoomID)
 
 
 // Faz o export dos modulos
-export default {searchVideo};
+export default {searchVideo, playvideo};
