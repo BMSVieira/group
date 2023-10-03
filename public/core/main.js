@@ -26,16 +26,40 @@
     });
 
     // Change source
-    socket.on('changeSource', (url) => {  
-        video.source = {
+    socket.on('changeSource', (videotype, videoID, video) => {  
+      console.log("olaaa");
+      console.log(videotype);
+      console.log(videoID);
+      console.log(video);
+
+      switch (videotype) {
+        case 'mp4':
+          video.source = {
+            type: 'video',
+            title: 'Example title',
+            sources: [
+              {
+                src: videoID,
+                type: 'video/mp4',
+                size: 720,
+              }
+            ],
+          };
+    
+        break;
+        case 'youtube':
+    
+          video.source = {
             type: 'video',
             sources: [
               {
-                src: url,
+                src: videoID,
                 provider: 'youtube',
               },
             ],
-        };
+          };
+        break;
+      }
     });
 
     // Room criado

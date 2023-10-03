@@ -54,8 +54,13 @@ io.on('connection', (socket) => {
   });
 
   // Send Message
-  socket.on('changeSource', (roomID, url) => {
-    io.to(roomID).emit('changeSource', url);
+  socket.on('changeSource', (videotype, videoID, video, roomID) => {
+    console.log(videotype);
+    console.log(videoID);
+    console.log(video);
+    console.log(roomID);
+    console.log("server ola");
+    io.to(roomID).emit('changeSource', videotype, videoID, video);
   });
 
     // Send Message

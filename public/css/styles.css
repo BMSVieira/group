@@ -90,11 +90,37 @@
     scroll-behavior: smooth;
   }
 }
+
+.previewvideo
+{
+  background-color: #05131e; 
+  border: 1px solid #091a26; 
+  margin-top: 11px;
+  width: 100%;
+  padding: 0px;
+  max-width: 100%;
+}
+
+.previewvideo:hover{
+  background-color: #0b263c;
+  cursor: pointer;
+  color: #fff;
+}
+
   .searchvideo
   {
     display:block;
     padding-top: 12px;
-  padding-bottom: 16px;
+    padding-bottom: 16px;
+  }
+
+  .cardmobile
+  {
+    position: relative; 
+    top: 29px; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
   }
 
   .searchvideoselect
@@ -1993,6 +2019,15 @@ progress {
     margin-top:0px!important;
   }
 
+  .cardmobile
+  {
+    position: relative; 
+    top: 0px; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+  }
+
   .px-5 {
     padding-right: 15px !important;
     padding-left: 15px !important;
@@ -2044,6 +2079,16 @@ progress {
   .table-responsive-md {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+  }
+
+  .cardmobile
+  {
+    position: relative;
+    top: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12pt;
   }
 
   .mtop
