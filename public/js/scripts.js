@@ -5,3 +5,15 @@
 */
 // This file is intentionally blank
 // Use this file to add JavaScript to your project
+
+function showSearchMobile()
+{
+    var searchvid = document.getElementById("searchvideo");
+
+    if (searchvid.style.display === "none" || searchvid.style.display === "") {
+        searchvid.style.display = "block";
+    } else {
+        searchvid.style.display = "none";
+    }
+
+}

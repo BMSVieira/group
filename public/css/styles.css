@@ -90,6 +90,12 @@
     scroll-behavior: smooth;
   }
 }
+  .searchvideo
+  {
+    display:block;
+    padding-top: 12px;
+  padding-bottom: 16px;
+  }
 
   .searchvideoselect
   {
@@ -1982,6 +1988,29 @@ progress {
     margin-top:0px!important;
   }
 
+  .tabcontentmobile
+  {
+    margin-top: 28px;
+  }
+
+  .navbarmobile
+  {
+    position: absolute;
+    z-index: 9;
+    background-color: #05131e;
+    width: 100%;
+  }
+
+  .searchvideo
+  {
+    display:none;
+    position: absolute;
+    width: 100%;
+    z-index: 11;
+    background-color: rgb(5, 19, 30);
+    padding: 12px 17px;
+  }
+
   .fixedresponsive
   {
     position: fixed!important;
@@ -2012,6 +2041,29 @@ progress {
     margin-top:0px!important;
   }
 
+  .navbarmobile
+  {
+    position: absolute;
+    z-index: 9;
+    background-color: #05131e;
+    width: 100%;
+  }
+
+  .tabcontentmobile
+  {
+    margin-top: 28px;
+  }
+
+  .searchvideo
+  {
+    display:none;
+    position: absolute;
+    width: 100%;
+    z-index: 11;
+    background-color: rgb(5, 19, 30);
+    padding: 12px 17px;
+  }
+
   .fixedresponsive
   {
     position: fixed!important;
@@ -2019,7 +2071,7 @@ progress {
     left: 0;
     right: 0;
     padding: 10px;
-    max-height: 52%!important;
+    max-height: 45%!important;
     overflow-y: auto;
   }
 
