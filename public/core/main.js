@@ -71,29 +71,51 @@
 
     // Pause Video
     // ------------------------------------------------------------------
+    let isPlaying = false;
+    let playPauseTimeoutId;
+    
+    // Pause Video
     video.on('pause', () => {
-        socket.emit('pause', realRoomID, video.currentTime);
+      clearTimeout(playPauseTimeoutId); // Clear any previous timeout
+      playPauseTimeoutId = setTimeout(() => {
+        socket.emit('pause', realRoomID);
+      }, 500); // Adjust the debounce time as needed
     });
-    socket.on('pause', (roomID) => {  video.pause();  });
-
+    
+    socket.on('pause', () => {
+      video.pause();
+    });
+    
     // Play Video
-    // ------------------------------------------------------------------
     video.on('play', () => {
+      clearTimeout(playPauseTimeoutId); // Clear any previous timeout
+      playPauseTimeoutId = setTimeout(() => {
         socket.emit('play', realRoomID);
+      }, 500); // Adjust the debounce time as needed
     });
-    socket.on('play', (roomID) => { video.play(); });
 
+    socket.on('play', (roomID) => { video.play(); });
+    
     // Seek Video
     // ------------------------------------------------------------------
     let previousTime = 0;
+    let timeoutId;
+    
     video.on('timeupdate', () => {
-        const currentTime = video.currentTime;
-        if (Math.abs(currentTime - previousTime) > 2) { 
-            socket.emit('seek', realRoomID, video.currentTime);
-        }
-        previousTime = currentTime;
+      const currentTime = video.currentTime;
+      if (Math.abs(currentTime - previousTime) > 2) {
+        clearTimeout(timeoutId); // Clear any previous timeout
+        timeoutId = setTimeout(() => {
+          socket.emit('seek', realRoomID, video.currentTime);
+          console.log("detected");
+        }, 2000); // Adjust the debounce time as needed
+      }
+      previousTime = currentTime;
     });
-    socket.on('seek', (time) => { video.currentTime = time; }); 
+    
+    socket.on('seek', (time) => {
+      video.currentTime = time;
+    });
 
     // Quando um utilizador entra, atualiza o video para o tempo atual
     // ------------------------------------------------------------------
