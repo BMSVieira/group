@@ -53,9 +53,9 @@ io.on('connection', (socket) => {
 
   });
 
-  // Send Message
-  socket.on('changeSource', (videotype, videoID, video, roomID) => {
-    io.to(roomID).emit('changeSource', videotype, videoID, video);
+  // Change Source
+  socket.on('changeSource', ( videoID, roomID, videotype) => {
+    io.to(roomID).emit('changeSource',  videoID, videotype);
   });
 
     // Send Message

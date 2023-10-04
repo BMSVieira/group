@@ -26,8 +26,7 @@
     });
 
     // Change source
-    socket.on('changeSource', (videotype, videoID, video) => {  
-     
+    socket.on('changeSource', (urlvideo, videotype) => {  
       switch (videotype) {
         case 'mp4':
           video.source = {
@@ -35,13 +34,12 @@
             title: 'Example title',
             sources: [
               {
-                src: videoID,
+                src: urlvideo,
                 type: 'video/mp4',
                 size: 720,
               }
             ],
           };
-    
         break;
         case 'youtube':
     
@@ -49,7 +47,7 @@
             type: 'video',
             sources: [
               {
-                src: videoID,
+                src: urlvideo,
                 provider: 'youtube',
               },
             ],

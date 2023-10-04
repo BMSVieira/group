@@ -42,6 +42,7 @@ function searchVideo(socket, realRoomID, video)
     const urlvideo = document.getElementById("video_url").value;
     const videoID = getVideoID(urlvideo);
 
+
     switch (videotype) {
       case 'mp4':
 
@@ -67,12 +68,12 @@ function searchVideo(socket, realRoomID, video)
           document.getElementById('video-thumbnail').src = videoThumbnailUrl;
 
           removeAllEvents(document.getElementById('previewvideo'));
-          document.getElementById('previewvideo').addEventListener('click', function() { playvideo(socket, videotype, videoID, video, realRoomID); });
+          document.getElementById('previewvideo').addEventListener('click', function() { playvideo(socket, videotype, urlvideo, video, realRoomID); });
+      
         })
         .catch((error) => {
           console.error('Error fetching video data:', error);
         });
-        
       break;
     }
 }
@@ -81,9 +82,8 @@ function searchVideo(socket, realRoomID, video)
     Search Video
     ####################################################################
 */
-function playvideo(socket, videotype, videoID, video, realRoomID)
+function playvideo(socket, videotype, urlvideo, video, realRoomID)
 {
-
   switch (videotype) {
     case 'mp4':
       video.source = {
@@ -91,14 +91,13 @@ function playvideo(socket, videotype, videoID, video, realRoomID)
         title: 'Example title',
         sources: [
           {
-            src: videoID,
+            src: urlvideo,
             type: 'video/mp4',
             size: 720,
           }
         ],
       };
-
-      socket.emit('changeSource', videotype, videoID, video, realRoomID);
+      socket.emit('changeSource', urlvideo, realRoomID, videotype);
     break;
     case 'youtube':
 
@@ -106,15 +105,14 @@ function playvideo(socket, videotype, videoID, video, realRoomID)
         type: 'video',
         sources: [
           {
-            src: videoID,
+            src: urlvideo,
             provider: 'youtube',
           },
         ],
       };
-      socket.emit('changeSource', videotype, videoID, video, realRoomID);
+      socket.emit('changeSource', urlvideo, realRoomID, videotype);
     break;
   }
-
 }
 
 
