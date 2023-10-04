@@ -63,12 +63,12 @@ function searchVideo(socket, realRoomID, video)
         document.getElementById('previewvideo').addEventListener('click', function() { playvideo(socket, videotype, urlvideo, video, realRoomID); });
 
         // Update the HTML elements with the video information
-        document.getElementById('video-title').textContent = "Own Source";
+        document.getElementById('video-title').textContent = urlvideo;
         document.getElementById('video-thumbnail').src = "../assets/mp4.png";
         document.getElementById('previewvideo').style.display = "block";
         
         removeAllEvents(document.getElementById('previewvideo'));
-        document.getElementById('previewvideo').addEventListener('click', function() { playvideo(socket, videotype, urlvideo, video, realRoomID, "Own Source", "../assets/mp4.png"); });
+        document.getElementById('previewvideo').addEventListener('click', function() { playvideo(socket, videotype, urlvideo, video, realRoomID, urlvideo, "../assets/mp4.png"); });
     
       break;
       case 'youtube':
@@ -117,7 +117,8 @@ function playvideo(socket, videotype, urlvideo, video, realRoomID, title, thumbn
         ],
       };
       socket.emit('changeSource', urlvideo, realRoomID, videotype);
-      socket.emit('sendPlayingNowMessage', realRoomID, "UnicSeen", title, thumbnail);
+      socket.emit('sendPlayingNowMessage', realRoomID, urlvideo, title, thumbnail);
+      socket.emit('setVideoHistory', realRoomID, urlvideo, title, thumbnail);
       resetPreview();
     break;
     case 'youtube':
@@ -132,7 +133,8 @@ function playvideo(socket, videotype, urlvideo, video, realRoomID, title, thumbn
         ],
       };
       socket.emit('changeSource', urlvideo, realRoomID, videotype);
-      socket.emit('sendPlayingNowMessage', realRoomID, "UnicSeen", title, thumbnail);
+      socket.emit('sendPlayingNowMessage', realRoomID, urlvideo, title, thumbnail);
+      socket.emit('setVideoHistory', realRoomID, urlvideo, title, thumbnail);
       resetPreview();
     break;
   }

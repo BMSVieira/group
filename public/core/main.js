@@ -77,10 +77,18 @@
         if(sender != utils.getUsername()){ utils.writeReceivedMessage(sender, message); utils.scrollChatBottom();}
     });
 
+    // Receber uma nova mensagem de video a tocar
+    // ------------------------------------------------------------------
     socket.on('sendPlayingNowMessage', (sender, title, thumbnail) => {  
        utils.writeReceivedSystemMessage(sender, title, thumbnail); 
        utils.scrollChatBottom();
-  });
+    });
+
+    // Colocar o histórico
+    // ------------------------------------------------------------------
+    socket.on('setVideoHistory', (urlvideo, title, thumbnail) => {  
+      utils.setVideoHistory(urlvideo, title, thumbnail); 
+    });
 
     // Quando um utilizador entra, atualiza o video para o tempo atual
     // ------------------------------------------------------------------

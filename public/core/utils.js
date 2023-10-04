@@ -4,13 +4,8 @@
     ####################################################################
 */
 function getCurrentHourInTimeZone(timeZone) {
-    // Create a new Date object in the specified time zone
     const currentTime = new Date().toLocaleString('en-US', { timeZone });
-  
-    // Extract the hour and minute parts from the formatted time string
     const [_, hour, minute] = currentTime.match(/(\d+):(\d+)/);
-  
-    // Return the current hour and minute as a formatted string
     return `${hour}:${minute}`;
   }
 
@@ -47,8 +42,7 @@ function updateInfo(roomID, type) {
             document.getElementById("idRoom").value = ""+roomID+"";
           break;
         default:
-      }
-      
+      }  
 }
 
 /* 
@@ -80,28 +74,6 @@ function extractValueFromURL() {
 function getUsername()
 {
   return localStorage.getItem('username');
-}
-
-/* 
-    Nova mensagem
-    ####################################################################
-*/
-function newMessage(from, to, message)
-{
-
-    let template = `
-    <div class="tyn-reply-item incoming">
-    <div class="tyn-reply-bubble">
-      <div class="tyn-reply-text user_chat_name"> `+from+` </div>
-    </div>
-    <div class="tyn-reply-group">
-      <div class="tyn-reply-bubble">
-         <div class="tyn-reply-text"> `+message+` </div>
-      </div>
-    </div>
-    </div>`;
-
-    document.getElementById("canal_gay").insertAdjacentHTML("beforeend", template);
 }
 
 /* 
@@ -203,6 +175,29 @@ function writeReceivedSystemMessage(sender, title, thumbnail)
 }
 
 /* 
+    Adiciona o video ao histórico
+    ####################################################################
+*/
+function setVideoHistory(urlvideo, title, thumbnail)
+{
+    let template = `                                  
+    <div class="container" style="display: block; background-color: #05131e; padding: 7px;">
+        <div class="row" style="width: 100%;">
+        <div class="col-2">
+            <img src="`+thumbnail+`" class="img-fluid rounded-start" id="video-thumbnail" style="/*! max-width: 86px; */ width: 100%;"> 
+        </div>
+        <div class="col-10">
+            <div class="card-body" style="padding: 9px 11px;">
+            <h5 class="card-title cardmobile" style="top: 6px; font-size: 14px;" id="video-title" style="">`+title+`</h5>
+        </div>
+        </div>
+        </div>
+    </div>`;
+
+    document.getElementById("history_tab").insertAdjacentHTML('beforeend', template);
+}
+
+/* 
     Scroll chat to bottom
     ####################################################################
 */
@@ -244,4 +239,4 @@ function checkUserName(socket, realRoomID)
 
 
 // Faz o export dos modulos
-export default {writeReceivedSystemMessage, setUsername, checkUserName, sendMessage, scrollChatBottom, userJoin, userQuit, extractValueFromURL, updateInfo, getUsername, writeMessageMine, writeReceivedMessage};
+export default {setVideoHistory, writeReceivedSystemMessage, setUsername, checkUserName, sendMessage, scrollChatBottom, userJoin, userQuit, extractValueFromURL, updateInfo, getUsername, writeMessageMine, writeReceivedMessage};
