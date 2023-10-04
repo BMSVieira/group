@@ -6,6 +6,7 @@
 // This file is intentionally blank
 // Use this file to add JavaScript to your project
 
+// Mostra searchbar no mobile
 function showSearchMobile()
 {
     var searchvid = document.getElementById("searchvideo");
@@ -15,5 +16,9 @@ function showSearchMobile()
     } else {
         searchvid.style.display = "none";
     }
-
+}
+// Limpa a barra de pesquisa quando se muda o tipo
+function clearSearchbar()
+{
+    document.getElementById("video_url").value = "";
 }

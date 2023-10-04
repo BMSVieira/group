@@ -1,4 +1,17 @@
-const apiKey = 'AIzaSyC1VM49p-A1zbNN6i7kLFpxEESe7XL3gUg';
+
+
+/* 
+    Reset video and url preview
+    ####################################################################
+*/
+function resetPreview(){
+
+  document.getElementById('video-title').textContent = "";
+  document.getElementById('video-thumbnail').src = "";
+  document.getElementById('previewvideo').style.display = "none";
+  document.getElementById("video_url").value = "";
+
+}
 
 /* 
     Get Unique ID from Video
@@ -52,10 +65,15 @@ function searchVideo(socket, realRoomID, video)
         // Update the HTML elements with the video information
         document.getElementById('video-title').textContent = "Own Source";
         document.getElementById('video-thumbnail').src = "../assets/mp4.png";
+        document.getElementById('previewvideo').style.display = "block";
         
+        removeAllEvents(document.getElementById('previewvideo'));
+        document.getElementById('previewvideo').addEventListener('click', function() { playvideo(socket, videotype, urlvideo, video, realRoomID, "Own Source", "../assets/mp4.png"); });
+    
       break;
       case 'youtube':
 
+      const apiKey = 'AIzaSyC1VM49p-A1zbNN6i7kLFpxEESe7XL3gUg';
       const apiUrl = `https://www.googleapis.com/youtube/v3/videos?key=${apiKey}&part=snippet&id=${videoID}`;
       fetch(apiUrl)
         .then((response) => response.json())
@@ -66,9 +84,10 @@ function searchVideo(socket, realRoomID, video)
           // Update the HTML elements with the video information
           document.getElementById('video-title').textContent = videoTitle;
           document.getElementById('video-thumbnail').src = videoThumbnailUrl;
+          document.getElementById('previewvideo').style.display = "block";
 
           removeAllEvents(document.getElementById('previewvideo'));
-          document.getElementById('previewvideo').addEventListener('click', function() { playvideo(socket, videotype, urlvideo, video, realRoomID); });
+          document.getElementById('previewvideo').addEventListener('click', function() { playvideo(socket, videotype, urlvideo, video, realRoomID, videoTitle, videoThumbnailUrl); });
       
         })
         .catch((error) => {
@@ -82,7 +101,7 @@ function searchVideo(socket, realRoomID, video)
     Search Video
     ####################################################################
 */
-function playvideo(socket, videotype, urlvideo, video, realRoomID)
+function playvideo(socket, videotype, urlvideo, video, realRoomID, title, thumbnail)
 {
   switch (videotype) {
     case 'mp4':
@@ -98,6 +117,8 @@ function playvideo(socket, videotype, urlvideo, video, realRoomID)
         ],
       };
       socket.emit('changeSource', urlvideo, realRoomID, videotype);
+      socket.emit('sendPlayingNowMessage', realRoomID, "UnicSeen", title, thumbnail);
+      resetPreview();
     break;
     case 'youtube':
 
@@ -111,6 +132,8 @@ function playvideo(socket, videotype, urlvideo, video, realRoomID)
         ],
       };
       socket.emit('changeSource', urlvideo, realRoomID, videotype);
+      socket.emit('sendPlayingNowMessage', realRoomID, "UnicSeen", title, thumbnail);
+      resetPreview();
     break;
   }
 }

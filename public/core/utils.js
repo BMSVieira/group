@@ -1,5 +1,20 @@
 
 /* 
+    Obter hora local
+    ####################################################################
+*/
+function getCurrentHourInTimeZone(timeZone) {
+    // Create a new Date object in the specified time zone
+    const currentTime = new Date().toLocaleString('en-US', { timeZone });
+  
+    // Extract the hour and minute parts from the formatted time string
+    const [_, hour, minute] = currentTime.match(/(\d+):(\d+)/);
+  
+    // Return the current hour and minute as a formatted string
+    return `${hour}:${minute}`;
+  }
+
+/* 
     Envia mensagem
     ####################################################################
 */
@@ -100,7 +115,7 @@ function userJoin(message)
     <div class="d-flex flex-row justify-content-end">
         <div>
             <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary" style="background-color:green;">`+message+`</p>
-            <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:15</p>
+            <p class="small smllhours me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">`+getCurrentHourInTimeZone("Europe/London")+`</p>
         </div>
     </div>`;
     document.getElementById("chatbody").insertAdjacentHTML('beforeend', template);
@@ -117,7 +132,7 @@ function userQuit(message)
     <div class="d-flex flex-row justify-content-end">
         <div>
         <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary" style="background-color:#6c1717;">`+message+`</p>
-        <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:15</p>
+        <p class="small smllhours me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">`+getCurrentHourInTimeZone("Europe/London")+`</p>
         </div>
     </div>`;
     document.getElementById("chatbody").insertAdjacentHTML('beforeend', template);
@@ -134,7 +149,7 @@ function writeMessageMine(message)
     <div class="d-flex flex-row justify-content-end">
         <div>
         <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">`+message+`</p>
-        <p class="small smllhours me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">00:15</p>
+        <p class="small smllhours me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">`+getCurrentHourInTimeZone("Europe/London")+`</p>
         </div>
     </div>`;
 
@@ -151,7 +166,36 @@ function writeReceivedMessage(sender, message)
     <div class="d-flex flex-row justify-content-start mb-4">
         <div>
         <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #05131e;"><b>`+sender+`:</b><br>`+message+`</p>
-        <p class="small smllhours ms-3 mb-3 rounded-3 text-muted">00:13</p>
+        <p class="small smllhours ms-3 mb-3 rounded-3 text-muted">`+getCurrentHourInTimeZone("Europe/London")+`</p>
+        </div>
+    </div>`;
+
+    document.getElementById("chatbody").insertAdjacentHTML('beforeend', template);
+}
+
+/* 
+    Escreve os users
+    ####################################################################
+*/
+function writeReceivedSystemMessage(sender, title, thumbnail)
+{
+    let template = `
+    <div class="d-flex flex-row justify-content-start mb-4">
+        <div>
+        <div class="small p-2 ms-3 mb-1 rounded-3" style="width: 100%; padding: 0px !important;">
+        <p style="margin-bottom: 3px;"><b>Now Playing:</b></p>
+        <div class="row" style="width: 100%;">
+                <div class="col-2">
+                <img src="`+thumbnail+`" class="img-fluid rounded-start" id="video-thumbnail" style="/*! max-width: 86px; */ width: 100%;"> 
+                </div>
+                <div class="col-10">
+                <div class="card-body" style="">
+                    <h3 id="video-title" class="card-title" style="font-size: 11pt;position: relative; bottom: 5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 257px;">`+title+`</h3>
+                </div>
+                </div>
+            </div>
+        </div>
+        <p class="small smllhours ms-3 mb-3 rounded-3 text-muted" style="position:relative; bottom:15px;">`+getCurrentHourInTimeZone("Europe/London")+`</p>
         </div>
     </div>`;
 
@@ -200,4 +244,4 @@ function checkUserName(socket, realRoomID)
 
 
 // Faz o export dos modulos
-export default {setUsername, checkUserName, sendMessage, scrollChatBottom, userJoin, userQuit, extractValueFromURL, updateInfo, getUsername, writeMessageMine, writeReceivedMessage};
+export default {writeReceivedSystemMessage, setUsername, checkUserName, sendMessage, scrollChatBottom, userJoin, userQuit, extractValueFromURL, updateInfo, getUsername, writeMessageMine, writeReceivedMessage};

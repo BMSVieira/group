@@ -58,9 +58,14 @@ io.on('connection', (socket) => {
     io.to(roomID).emit('changeSource',  videoID, videotype);
   });
 
-    // Send Message
+  // Send Message
   socket.on('sendMessage', (roomID, sender, message) => {
     io.to(roomID).emit('receiveMessage', sender, message);
+  });
+
+  // Send Message
+  socket.on('sendPlayingNowMessage', (roomID, sender, title, thumbnail) => {
+    io.to(roomID).emit('sendPlayingNowMessage', sender, title, thumbnail);
   });
 
   // Play video

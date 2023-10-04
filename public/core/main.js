@@ -77,6 +77,11 @@
         if(sender != utils.getUsername()){ utils.writeReceivedMessage(sender, message); utils.scrollChatBottom();}
     });
 
+    socket.on('sendPlayingNowMessage', (sender, title, thumbnail) => {  
+       utils.writeReceivedSystemMessage(sender, title, thumbnail); 
+       utils.scrollChatBottom();
+  });
+
     // Quando um utilizador entra, atualiza o video para o tempo atual
     // ------------------------------------------------------------------
     socket.on('updateInfo', (roomID) => { 
