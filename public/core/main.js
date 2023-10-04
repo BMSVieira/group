@@ -12,6 +12,9 @@
     document.getElementById('button_url_video').addEventListener('click', function() { player.searchVideo(socket, realRoomID, video); });
     document.getElementById('setUsernameButton').addEventListener('click', function() { utils.setUsername(socket, realRoomID); });
     document.getElementById('sendMessage').addEventListener('click', function() { utils.sendMessage(socket, realRoomID); });
+    document.getElementById("chat_input").addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') { utils.sendMessage(socket, realRoomID);}
+    });
 
     // Junta-se ou Cria uma room nova caso não encontre
     const joinRoom = (roomID) => {
@@ -65,11 +68,11 @@
 
     // Utilizador juntou-se a sala
     // ------------------------------------------------------------------
-    socket.on('UserJoinedRoom', (username) => {   utils.userJoin("<b>"+username+"</b> Joined room"); utils.scrollChatBottom(); });
+    socket.on('UserJoinedRoom', (username) => { utils.userJoin("<b>"+username+"</b> Joined room"); utils.scrollChatBottom(); });
 
     // Utilizador desconectou-se
     // ------------------------------------------------------------------
-    socket.on('UserDisconnected', () => {  utils.userQuit("Left room"); utils.scrollChatBottom(); });
+    socket.on('UserDisconnected', (username) => { utils.userQuit("<b>"+username+"</b> Left room"); utils.scrollChatBottom(); });
 
     // Recebeu uma nova mensagem de um utilizador
     // ------------------------------------------------------------------

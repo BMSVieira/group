@@ -22,3 +22,13 @@ function clearSearchbar()
 {
     document.getElementById("video_url").value = "";
 }
+// Invite copy to clipboard
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('copyButton').addEventListener('click', function () {
+        var textToCopy = document.getElementById('textToCopy');
+        textToCopy.select();
+        document.execCommand('copy');
+        alert('Copied to clipboard: ' + textToCopy.value);
+    });
+});
+  

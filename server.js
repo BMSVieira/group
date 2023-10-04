@@ -7,7 +7,9 @@ var io = require('socket.io')(server);
 // Create a data structure to track existing rooms
 const rooms = new Map();
 var latestTime = 0;
-var roomID = ""
+var roomID = "";
+var realRoomID = "";
+const socketIdToUsername = {};
 
 app.use(express.static(__dirname + '/public')); 
 
@@ -27,6 +29,8 @@ const generateRoomID = () => {
 };
 
 io.on('connection', (socket) => {
+
+  console.log('A user connected with socket ID:', socket.id);
 
   socket.on('createOrJoinRoom', (roomID) => {
     if (rooms.has(roomID)) {
@@ -50,6 +54,8 @@ io.on('connection', (socket) => {
 
     io.to(roomID).emit('catchUp', latestTime);
     io.to(roomID).emit('updateInfo', roomID);
+    // Updates real room ID
+    realRoomID = roomID;
 
   });
 
@@ -92,11 +98,21 @@ io.on('connection', (socket) => {
   // User Joined Room
   socket.on('UserJoinedRoom', (roomID, username) => {
     io.to(roomID).emit('UserJoinedRoom', username);
+    socketIdToUsername[socket.id] = username;
+    console.log(`${username} has set their username.`);
+
+    console.log(socketIdToUsername);
   });
 
-  // Remove the user from all rooms when they disconnect
+  // Handle user disconnection
   socket.on('disconnect', () => {
-    io.to(roomID).emit('UserDisconnected');
+       const username = socketIdToUsername[socket.id];
+       if (username) {
+         console.log(`${username} disconnected.`);
+         delete socketIdToUsername[socket.id];
+         io.to(realRoomID).emit('UserDisconnected', username);
+       }
   });
+
 });
 
