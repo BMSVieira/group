@@ -1,13 +1,13 @@
 {
-  "name": "socket-example",
+  "name": "UnicSeen",
   "version": "1.0.0",
-  "description": "Demo socket.io project",
+  "description": "Share video in real time with your friends.",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Andrew Errity",
-  "license": "ISC",
+  "author": "Bruno Vieira",
+  "license": "MIT",
   "dependencies": {
     "express": "4.18.2",
     "socket.io": "4.7.2"
