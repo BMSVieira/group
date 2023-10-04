@@ -28,7 +28,14 @@ document.addEventListener('DOMContentLoaded', function () {
         var textToCopy = document.getElementById('textToCopy');
         textToCopy.select();
         document.execCommand('copy');
-        alert('Copied to clipboard: ' + textToCopy.value);
     });
 });
   
+// Invite copy to clipboard Room Info
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('copyButtonRoom').addEventListener('click', function () {
+        var textToCopy = document.getElementById('inviteRoom');
+        textToCopy.select();
+        document.execCommand('copy');
+    });
+});

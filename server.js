@@ -64,6 +64,11 @@ io.on('connection', (socket) => {
     io.to(roomID).emit('changeSource',  videoID, videotype);
   });
 
+  // User Is Typing
+  socket.on('isTyping', (roomID, sender) => {
+    io.to(roomID).emit('isTyping', sender);
+  });
+
   // Send Message
   socket.on('sendMessage', (roomID, sender, message) => {
     io.to(roomID).emit('receiveMessage', sender, message);

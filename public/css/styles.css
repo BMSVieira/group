@@ -91,6 +91,19 @@
   }
 }
 
+.hideinvite
+{
+  display:block;
+}
+
+.istyping
+{
+  width: 100%;
+  position: absolute;
+  margin-bottom: 106px; 
+  display:none;
+}
+
 .previewvideo
 {
   background-color: #05131e; 
@@ -121,6 +134,19 @@
     white-space: nowrap; 
     overflow: hidden; 
     text-overflow: ellipsis;
+  }
+
+  .historyline
+  {
+    background-color: #05131e;
+    padding: 7px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #0a1b28;
+  }
+
+  .tabcontentmobile {
+    margin-top: 10px;
   }
 
   .searchvideoselect
@@ -2065,6 +2091,7 @@ progress {
     padding: 10px;
     max-height: 52%!important;
     overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .paddingresp
@@ -2072,6 +2099,11 @@ progress {
     padding: 0px 10px;
     background-color: transparent;
     margin: 0px;
+  }
+
+  .hideinvite
+  {
+    display:none;
   }
 
 }
@@ -2106,7 +2138,7 @@ progress {
 
   .tabcontentmobile
   {
-    margin-top: 28px;
+    margin-top: 50px;
   }
 
   .searchvideo
@@ -2128,6 +2160,7 @@ progress {
     padding: 10px;
     max-height: 45%!important;
     overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .paddingresp
@@ -2146,9 +2179,14 @@ progress {
 
   .paddingresp
   {
-    padding: 0px 10px;
+    padding: 0px 0px;
     background-color: transparent;
     margin: 0px;
+  }
+
+  .hideinvite
+  {
+    display:none;
   }
 }
 @media (max-width: 1199.98px) {
@@ -3875,7 +3913,7 @@ textarea.form-control-lg {
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
   color: #f4f4f4;
-  background-color: #000;
+  background-color: #05131e;
   border-color: #151a1e;
 }
 .nav-tabs .dropdown-menu {

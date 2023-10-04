@@ -1,3 +1,18 @@
+/* 
+    set time out para quando o utilizador está a escrever
+    ####################################################################
+*/
+let timeoutId;
+function isTyping(sender) {
+    if(sender != getUsername())
+    {
+        clearTimeout(timeoutId);
+        document.getElementById("istyping").style.display = "block";
+        timeoutId = setTimeout(function() {
+            document.getElementById("istyping").style.display = "none";
+        }, 1000);
+    }
+  }
 
 /* 
     Obter hora local
@@ -38,8 +53,14 @@ function updateInfo(roomID, type) {
             document.getElementById("usernameRoom").value = getUsername();
           break;
         case 'roominfo':
-            document.getElementById("inviteRoom").value = "localhost:3000/room="+roomID+"";
+
+            // Obter o dominio
+            const currentDomain = window.location.hostname;
+
+            document.getElementById("inviteRoom").value = currentDomain+":3000/room="+roomID+"";
+            document.getElementById("textToCopy").value = currentDomain+":3000/room="+roomID+"";
             document.getElementById("idRoom").value = ""+roomID+"";
+            
           break;
         default:
       }  
@@ -181,7 +202,7 @@ function writeReceivedSystemMessage(sender, title, thumbnail)
 function setVideoHistory(urlvideo, title, thumbnail)
 {
     let template = `                                  
-    <div class="container" style="display: block; background-color: #05131e; padding: 7px;">
+    <div class="container historyline">
         <div class="row" style="width: 100%;">
         <div class="col-2">
             <img src="`+thumbnail+`" class="img-fluid rounded-start" id="video-thumbnail" style="/*! max-width: 86px; */ width: 100%;"> 
@@ -239,4 +260,4 @@ function checkUserName(socket, realRoomID)
 
 
 // Faz o export dos modulos
-export default {setVideoHistory, writeReceivedSystemMessage, setUsername, checkUserName, sendMessage, scrollChatBottom, userJoin, userQuit, extractValueFromURL, updateInfo, getUsername, writeMessageMine, writeReceivedMessage};
+export default {isTyping, setVideoHistory, writeReceivedSystemMessage, setUsername, checkUserName, sendMessage, scrollChatBottom, userJoin, userQuit, extractValueFromURL, updateInfo, getUsername, writeMessageMine, writeReceivedMessage};

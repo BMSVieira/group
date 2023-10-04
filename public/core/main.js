@@ -9,12 +9,13 @@
     // Variaveis & Configss
     const roomID = utils.extractValueFromURL();
     var realRoomID = "";
+
+    // Event Listeners
     document.getElementById('button_url_video').addEventListener('click', function() { player.searchVideo(socket, realRoomID, video); });
     document.getElementById('setUsernameButton').addEventListener('click', function() { utils.setUsername(socket, realRoomID); });
     document.getElementById('sendMessage').addEventListener('click', function() { utils.sendMessage(socket, realRoomID); });
-    document.getElementById("chat_input").addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') { utils.sendMessage(socket, realRoomID);}
-    });
+    document.getElementById("chat_input").addEventListener('keydown', (event) => { if (event.key === 'Enter') { utils.sendMessage(socket, realRoomID);}});
+    document.getElementById('chat_input').addEventListener('keydown', function() { socket.emit('isTyping', realRoomID, utils.getUsername()); });
 
     // Junta-se ou Cria uma room nova caso não encontre
     const joinRoom = (roomID) => {
@@ -91,6 +92,12 @@
     // ------------------------------------------------------------------
     socket.on('setVideoHistory', (urlvideo, title, thumbnail) => {  
       utils.setVideoHistory(urlvideo, title, thumbnail); 
+    });
+
+    // User is Typing
+    // ------------------------------------------------------------------
+    socket.on('isTyping', (sender) => {  
+        utils.isTyping(sender);
     });
 
     // Quando um utilizador entra, atualiza o video para o tempo atual
