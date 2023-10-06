@@ -3,8 +3,9 @@
     import player from './video.js';
 
     localStorage.removeItem('username');
-    var socket = io.connect();
-    var video = new Plyr('#player');
+    var socket = "";
+    const startConnection = () => { socket = io.connect();  };
+    var video = new Plyr('#player', {autoplay: false,muted: true});
 
     // Variaveis & Configss
     const roomID = utils.extractValueFromURL();
@@ -21,7 +22,9 @@
     const joinRoom = (roomID) => {
         socket.emit('createOrJoinRoom', roomID);
     };
-    utils.checkUserName().then(joinRoom(roomID));
+
+    // Check Username, conecta-se e depois junta-se ao quarto.
+    utils.checkUserName().then(startConnection()).then(joinRoom(roomID));
 
     // Entrou numa room
     socket.on('joinedRoom', (roomID) => {
@@ -31,33 +34,7 @@
 
     // Change source
     socket.on('changeSource', (urlvideo, videotype) => {  
-      switch (videotype) {
-        case 'mp4':
-          video.source = {
-            type: 'video',
-            title: 'Example title',
-            sources: [
-              {
-                src: urlvideo,
-                type: 'video/mp4',
-                size: 720,
-              }
-            ],
-          };
-        break;
-        case 'youtube':
-    
-          video.source = {
-            type: 'video',
-            sources: [
-              {
-                src: urlvideo,
-                provider: 'youtube',
-              },
-            ],
-          };
-        break;
-      }
+       player.changeSource(video, urlvideo, videotype);
     });
 
     // Room criado
@@ -161,7 +138,25 @@
 
     // Quando um utilizador entra, atualiza o video para o tempo atual
     // ------------------------------------------------------------------
-    socket.on('catchUp', (latestTime) => { video.currentTime = latestTime; } ); 
-
+    socket.on('catchUp', (latestTime, latestSource) => { 
+      switch (latestSource.videotype) {
+        case 'mp4':
+          if(String(video.source) != String(latestSource.videourl)) {
+            player.changeSource(video, latestSource.videourl, latestSource.videotype);
+          }
+          video.currentTime = latestTime; 
+          video.play();
+        break;
+        case 'youtube':
+          if(String(player.getVideoID(video.source)) != String(latestSource.videourl)) {
+            player.changeSource(video, latestSource.videourl, latestSource.videotype);
+          }
+          video.on('ready', (event) => {
+            video.currentTime = latestTime; 
+            video.play();
+          });
+        break;
+      }
+    }); 
     // #################################################################
 

@@ -7,9 +7,11 @@ var io = require('socket.io')(server);
 // Create a data structure to track existing rooms
 const rooms = new Map();
 var latestTime = 0;
+var latestSource = "";
 var roomID = "";
 var realRoomID = "";
 const socketIdToUsername = {};
+var videoCurrentlyPlaying = "";
 
 app.use(express.static(__dirname + '/public')); 
 
@@ -52,7 +54,12 @@ io.on('connection', (socket) => {
       socket.emit('createdRoom', roomID);
     }
 
-    io.to(roomID).emit('catchUp', latestTime);
+    // SetTimeOut arbitrário | Corrigir depois.
+    setTimeout(() => {
+      io.to(roomID).emit('catchUp', latestTime, latestSource);
+    }, "5000");
+    
+
     io.to(roomID).emit('updateInfo', roomID);
     // Updates real room ID
     realRoomID = roomID;
@@ -62,6 +69,7 @@ io.on('connection', (socket) => {
   // Change Source
   socket.on('changeSource', ( videoID, roomID, videotype) => {
     io.to(roomID).emit('changeSource',  videoID, videotype);
+    latestSource = {videourl:videoID, videotype:videotype};
   });
 
   // User Is Typing

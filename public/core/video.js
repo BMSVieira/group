@@ -27,21 +27,11 @@ function removeAllEvents(element) {
     ####################################################################
 */
 function getVideoID(url) {
-  
-  let videoID = "";
-  const youtubeRegex = /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?feature=player_embedded&v=))([^&\n?#]+)/;
-  const vimeoRegex = /vimeo\.com\/(\d+)/;
-  const dailymotionRegex = /dailymotion\.com\/video\/([a-zA-Z0-9]+)/;
-
-  if (youtubeRegex.test(url)) {
-    videoID = url.match(youtubeRegex)[1];
-  } else if (vimeoRegex.test(url)) {
-    videoID = url.match(vimeoRegex)[1];
-  } else if (dailymotionRegex.test(url)) {
-    videoID = url.match(dailymotionRegex)[1];
-  }
-
-  return videoID;
+    const match = url.match(/[?&]v=([^&]+)/);
+    if (match) {
+      return match[1];
+    }
+    return null; // Return null if the video ID is not found in the URL
 }
 
 /* 
@@ -87,7 +77,7 @@ function searchVideo(socket, realRoomID, video)
           document.getElementById('previewvideo').style.display = "block";
 
           removeAllEvents(document.getElementById('previewvideo'));
-          document.getElementById('previewvideo').addEventListener('click', function() { playvideo(socket, videotype, urlvideo, video, realRoomID, videoTitle, videoThumbnailUrl); });
+          document.getElementById('previewvideo').addEventListener('click', function() { playvideo(socket, videotype, videoID, video, realRoomID, videoTitle, videoThumbnailUrl); });
       
         })
         .catch((error) => {
@@ -140,6 +130,40 @@ function playvideo(socket, videotype, urlvideo, video, realRoomID, title, thumbn
   }
 }
 
+/* 
+    Search Video
+    ####################################################################
+*/
+function changeSource(video, urlvideo, videotype)
+{
+  switch (videotype) {
+    case 'mp4':
+      video.source = {
+        type: 'video',
+        title: 'Example title',
+        sources: [
+          {
+            src: urlvideo,
+            type: 'video/mp4',
+            size: 720,
+          }
+        ],
+      };
+    break;
+    case 'youtube':
+
+      video.source = {
+        type: 'video',
+        sources: [
+          {
+            src: urlvideo,
+            provider: 'youtube',
+          },
+        ],
+      };
+    break;
+  }
+}
 
 // Faz o export dos modulos
-export default {searchVideo, playvideo};
+export default {changeSource, searchVideo, playvideo, getVideoID};
