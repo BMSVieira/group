@@ -6,13 +6,19 @@ var io = require('socket.io')(server);
 
 // Create a data structure to track existing rooms
 const rooms = new Map();
-var latestTime = 0;
-var latestSource = "";
-var roomID = "";
-var realRoomID = "";
-const socketIdToUsername = {};
-var videoCurrentlyPlaying = "";
+var roomdata = {};
 
+function getIDRoom(socketid)
+{
+  let foundKey = null;
+  for (const [key, sockets] of rooms) {
+    if (sockets.includes(socketid)) {
+      foundKey = key;
+      break; // Stop searching once the key is found
+    }
+  }
+  return foundKey;
+}
 app.use(express.static(__dirname + '/public')); 
 
 // Redirect / to our index.html file
@@ -33,7 +39,6 @@ const generateRoomID = () => {
 io.on('connection', (socket) => {
 
   console.log('A user connected with socket ID:', socket.id);
-
   socket.on('createOrJoinRoom', (roomID) => {
     if (rooms.has(roomID)) {
 
@@ -45,7 +50,7 @@ io.on('connection', (socket) => {
 
     } else { // Caso não exista
 
-      roomID = generateRoomID(); 
+      const roomID = generateRoomID(); 
       // Criar room nova
       rooms.set(roomID, [socket.id]);
       // Entrar
@@ -56,20 +61,29 @@ io.on('connection', (socket) => {
 
     // SetTimeOut arbitrário | Corrigir depois.
     setTimeout(() => {
-      io.to(roomID).emit('catchUp', latestTime, latestSource);
+      console.log(roomdata);
+      io.to(getIDRoom(socket.id)).emit('catchUp', roomdata[getIDRoom(socket.id)].latestTime, roomdata[getIDRoom(socket.id)].latestSource);
     }, "5000");
     
+    io.to(roomID).emit('updateInfo', getIDRoom(socket.id));
 
-    io.to(roomID).emit('updateInfo', roomID);
-    // Updates real room ID
-    realRoomID = roomID;
+    if (!roomdata[getIDRoom(socket.id)]) {
+      roomdata[getIDRoom(socket.id)] = {
+        latestTime: 0,
+        latestSource: "",
+        socketIdToUsername: {}
+      };
+    }
 
+    console.log(roomdata);
+    console.log(rooms);
   });
 
+  
   // Change Source
   socket.on('changeSource', ( videoID, roomID, videotype) => {
     io.to(roomID).emit('changeSource',  videoID, videotype);
-    latestSource = {videourl:videoID, videotype:videotype};
+    roomdata[getIDRoom(socket.id)].latestSource = {videourl:videoID, videotype:videotype};
   });
 
   // User Is Typing
@@ -105,25 +119,22 @@ io.on('connection', (socket) => {
   // Seek Video
   socket.on('seek', (roomID, currentTime) => {
     io.to(roomID).emit('seek', currentTime);
-    latestTime = currentTime;
+    roomdata[getIDRoom(socket.id)].latestTime = currentTime;
   });
 
   // User Joined Room
   socket.on('UserJoinedRoom', (roomID, username) => {
     io.to(roomID).emit('UserJoinedRoom', username);
-    socketIdToUsername[socket.id] = username;
-    console.log(`${username} has set their username.`);
-
-    console.log(socketIdToUsername);
+    roomdata[roomID].socketIdToUsername[socket.id] = username;
   });
 
   // Handle user disconnection
   socket.on('disconnect', () => {
-       const username = socketIdToUsername[socket.id];
+       const username = roomdata[getIDRoom(socket.id)].socketIdToUsername[socket.id];
        if (username) {
          console.log(`${username} disconnected.`);
-         delete socketIdToUsername[socket.id];
-         io.to(realRoomID).emit('UserDisconnected', username);
+         delete roomdata[getIDRoom(socket.id)].socketIdToUsername[socket.id];
+         io.to(getIDRoom(socket.id)).emit('UserDisconnected', username);
        }
   });
 
