@@ -61,11 +61,10 @@ io.on('connection', (socket) => {
 
     // SetTimeOut arbitrário | Corrigir depois.
     setTimeout(() => {
-      console.log(roomdata);
       io.to(getIDRoom(socket.id)).emit('catchUp', roomdata[getIDRoom(socket.id)].latestTime, roomdata[getIDRoom(socket.id)].latestSource);
-    }, "5000");
+    }, "3000");
     
-    io.to(roomID).emit('updateInfo', getIDRoom(socket.id));
+    io.to(getIDRoom(socket.id)).emit('updateInfo', getIDRoom(socket.id));
 
     if (!roomdata[getIDRoom(socket.id)]) {
       roomdata[getIDRoom(socket.id)] = {
@@ -74,12 +73,8 @@ io.on('connection', (socket) => {
         socketIdToUsername: {}
       };
     }
-
-    console.log(roomdata);
-    console.log(rooms);
   });
 
-  
   // Change Source
   socket.on('changeSource', ( videoID, roomID, videotype) => {
     io.to(roomID).emit('changeSource',  videoID, videotype);
@@ -126,6 +121,7 @@ io.on('connection', (socket) => {
   socket.on('UserJoinedRoom', (roomID, username) => {
     io.to(roomID).emit('UserJoinedRoom', username);
     roomdata[roomID].socketIdToUsername[socket.id] = username;
+    io.to(roomID).emit('updateUsersList', roomdata[roomID].socketIdToUsername);
   });
 
   // Handle user disconnection
@@ -135,6 +131,7 @@ io.on('connection', (socket) => {
          console.log(`${username} disconnected.`);
          delete roomdata[getIDRoom(socket.id)].socketIdToUsername[socket.id];
          io.to(getIDRoom(socket.id)).emit('UserDisconnected', username);
+         io.to(getIDRoom(socket.id)).emit('updateUsersList', roomdata[getIDRoom(socket.id)].socketIdToUsername);
        }
   });
 

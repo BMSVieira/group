@@ -48,6 +48,10 @@
     // ------------------------------------------------------------------
     socket.on('UserJoinedRoom', (username) => { utils.userJoin("<b>"+username+"</b> Joined room"); utils.scrollChatBottom(); });
 
+    // Atualizar lista de utilizadores na sala
+    // ------------------------------------------------------------------
+    socket.on('updateUsersList', (users) => { utils.updateUsersList(users);});
+
     // Utilizador desconectou-se
     // ------------------------------------------------------------------
     socket.on('UserDisconnected', (username) => { utils.userQuit("<b>"+username+"</b> Left room"); utils.scrollChatBottom(); });

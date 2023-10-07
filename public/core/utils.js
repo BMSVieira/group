@@ -115,6 +115,31 @@ function userJoin(message)
 }
 
 /* 
+    Atualiza a lista de utilizadores
+    ####################################################################
+*/
+function updateUsersList(users)
+{
+    // Limpa os users todos.
+    document.getElementById("online_users").innerHTML = "";
+
+    for (const key in users) {
+    if (users.hasOwnProperty(key)) {
+
+        const value = users[key];
+
+        // Template
+        const template = `
+        <div class="row col-sm-3 user_unic">
+        <div class="username_online">`+value+`</div>
+        </div>`;
+
+        document.getElementById("online_users").insertAdjacentHTML('beforeend', template);
+    }
+    }
+}
+
+/* 
     User juntou-se
     ####################################################################
 */
@@ -260,4 +285,4 @@ function checkUserName(socket, realRoomID)
 
 
 // Faz o export dos modulos
-export default {isTyping, setVideoHistory, writeReceivedSystemMessage, setUsername, checkUserName, sendMessage, scrollChatBottom, userJoin, userQuit, extractValueFromURL, updateInfo, getUsername, writeMessageMine, writeReceivedMessage};
+export default {updateUsersList, isTyping, setVideoHistory, writeReceivedSystemMessage, setUsername, checkUserName, sendMessage, scrollChatBottom, userJoin, userQuit, extractValueFromURL, updateInfo, getUsername, writeMessageMine, writeReceivedMessage};

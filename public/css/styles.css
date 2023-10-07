@@ -96,6 +96,38 @@
   display:block;
 }
 
+.onlineusers
+{
+  position: fixed;  
+  bottom: 0;  
+  left: 0;  
+  width: 100%; 
+  display: flex; 
+  justify-content: center;
+}
+
+.username_online
+{
+  position: absolute;
+  bottom: 0px;
+  margin: 0px;
+  padding: 4px 5px;
+  text-align: center;
+  width: 98px!important; 
+  background-color: #008000;
+  font-size: 8pt;
+  font-weight: bold;
+}
+
+.user_unic
+{
+  width: 100px!important; 
+  height: 80px;  
+  background-color: #0a0f13;  
+  border: 1px solid #0a1b28; 
+  margin-right: 5px;
+}
+
 .istyping
 {
   width: 100%;
@@ -2045,6 +2077,11 @@ progress {
     margin-top:0px!important;
   }
 
+  .onlineusers
+  {
+    display:none;
+  }
+
   .cardmobile
   {
     position: relative; 
@@ -2111,6 +2148,11 @@ progress {
   .table-responsive-md {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+  }
+
+  .onlineusers
+  {
+    display:none;
   }
 
   .cardmobile
