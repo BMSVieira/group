@@ -112,11 +112,20 @@ io.on('connection', (socket) => {
 
   // Log Time
   socket.on('logCurrentTime', (roomID, currentTime, username, socketid) => {
-    syncdata[getIDRoom(socket.id)].clients[socket.id] = {
-      socket: socket.id,
-      username: username,
-      currentTime: currentTime,
-    };
+    const roomId = getIDRoom(socket.id);
+    const syncdataRoom = syncdata[roomId];
+    
+    if (syncdataRoom) {
+      if (!syncdataRoom.clients) {
+        syncdataRoom.clients = {};
+      }
+  
+      syncdataRoom.clients[socket.id] = {
+        socket: socket.id,
+        username: username,
+        currentTime: currentTime,
+      };
+    }
   });
 
   // Send Playing Message
