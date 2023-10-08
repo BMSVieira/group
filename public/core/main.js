@@ -50,7 +50,8 @@
 
     // Atualizar lista de utilizadores na sala
     // ------------------------------------------------------------------
-    socket.on('updateUsersList', (users) => { utils.updateUsersList(users);});
+    socket.on('updateUsersList', (users) => { 
+      utils.updateUsersList(users);});
 
     // Utilizador desconectou-se
     // ------------------------------------------------------------------
@@ -79,6 +80,12 @@
     // ------------------------------------------------------------------
     socket.on('isTyping', (sender) => {  
         utils.isTyping(sender);
+    });
+
+    // Update time log
+    // ------------------------------------------------------------------
+    socket.on('updateLogTime', (syncdata) => {  
+      utils.timeLog(syncdata);
     });
 
     // Quando um utilizador entra, atualiza o video para o tempo atual
@@ -126,6 +133,10 @@
     
     video.on('timeupdate', () => {
       const currentTime = video.currentTime;
+
+      // log current time
+      socket.emit('logCurrentTime', realRoomID, currentTime, utils.getUsername(), socket.id);
+
       if (Math.abs(currentTime - previousTime) > 2) {
         clearTimeout(timeoutId); // Clear any previous timeout
         timeoutId = setTimeout(() => {
@@ -133,6 +144,7 @@
           console.log("detected");
         }, 2000); // Adjust the debounce time as needed
       }
+
       previousTime = currentTime;
     });
     
@@ -143,6 +155,8 @@
     // Quando um utilizador entra, atualiza o video para o tempo atual
     // ------------------------------------------------------------------
     socket.on('catchUp', (latestTime, latestSource) => { 
+      console.log(latestTime);
+      console.log(latestSource);
       switch (latestSource.videotype) {
         case 'mp4':
           if(String(video.source) != String(latestSource.videourl)) {

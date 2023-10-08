@@ -39,3 +39,13 @@ document.addEventListener('DOMContentLoaded', function () {
         document.execCommand('copy');
     });
 });
+
+function openNav() {
+    document.getElementById("mySidebar").style.width = "250px";
+    document.getElementById("mySidebar").style.marginLeft = "0px";
+  }
+  
+function closeNav() {
+    document.getElementById("mySidebar").style.width = "250px";
+    document.getElementById("mySidebar").style.marginLeft = "-250px";
+}

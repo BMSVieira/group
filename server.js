@@ -3,10 +3,13 @@ var express = require('express');
 var app = express();  
 var server = require('http').createServer(app); 
 var io = require('socket.io')(server); 
+const util = require('util');
 
 // Create a data structure to track existing rooms
 const rooms = new Map();
 var roomdata = {};
+var syncdata = {};
+let isRunning = 0;
 
 function getIDRoom(socketid)
 {
@@ -39,6 +42,7 @@ const generateRoomID = () => {
 io.on('connection', (socket) => {
 
   console.log('A user connected with socket ID:', socket.id);
+
   socket.on('createOrJoinRoom', (roomID) => {
     if (rooms.has(roomID)) {
 
@@ -62,17 +66,32 @@ io.on('connection', (socket) => {
     // SetTimeOut arbitrário | Corrigir depois.
     setTimeout(() => {
       io.to(getIDRoom(socket.id)).emit('catchUp', roomdata[getIDRoom(socket.id)].latestTime, roomdata[getIDRoom(socket.id)].latestSource);
-    }, "3000");
+    }, "5000");
     
     io.to(getIDRoom(socket.id)).emit('updateInfo', getIDRoom(socket.id));
 
     if (!roomdata[getIDRoom(socket.id)]) {
       roomdata[getIDRoom(socket.id)] = {
         latestTime: 0,
-        latestSource: "",
+        latestSource: "youtube",
         socketIdToUsername: {}
       };
     }
+
+    if (!syncdata[getIDRoom(socket.id)]) {
+      syncdata[getIDRoom(socket.id)] = {
+        clients: {}
+      };
+    }
+
+    if(isRunning == 0) {
+      isRunning = 1;
+      setInterval(() => {
+        io.to(getIDRoom(socket.id)).emit('updateLogTime', syncdata);
+        // console.log(util.inspect(syncdata, {showHidden: false, depth: null, colors: true}))
+      }, "1000");
+    }
+    
   });
 
   // Change Source
@@ -89,6 +108,15 @@ io.on('connection', (socket) => {
   // Send Message
   socket.on('sendMessage', (roomID, sender, message) => {
     io.to(roomID).emit('receiveMessage', sender, message);
+  });
+
+  // Log Time
+  socket.on('logCurrentTime', (roomID, currentTime, username, socketid) => {
+    syncdata[getIDRoom(socket.id)].clients[socket.id] = {
+      socket: socket.id,
+      username: username,
+      currentTime: currentTime,
+    };
   });
 
   // Send Playing Message
@@ -122,6 +150,7 @@ io.on('connection', (socket) => {
     io.to(roomID).emit('UserJoinedRoom', username);
     roomdata[roomID].socketIdToUsername[socket.id] = username;
     io.to(roomID).emit('updateUsersList', roomdata[roomID].socketIdToUsername);
+    console.log(roomdata[roomID].socketIdToUsername);
   });
 
   // Handle user disconnection
@@ -130,6 +159,7 @@ io.on('connection', (socket) => {
        if (username) {
          console.log(`${username} disconnected.`);
          delete roomdata[getIDRoom(socket.id)].socketIdToUsername[socket.id];
+         delete syncdata[getIDRoom(socket.id)].clients[socket.id];
          io.to(getIDRoom(socket.id)).emit('UserDisconnected', username);
          io.to(getIDRoom(socket.id)).emit('updateUsersList', roomdata[getIDRoom(socket.id)].socketIdToUsername);
        }

@@ -15,17 +15,19 @@
     </head>
 
     <body style="background-color:#0a0f13; color:white;"></body>
+
         <!-- Responsive navbar-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container" style="max-width: 1251px;">
                 <a class="navbar-brand" href="#!"><img src="assets/logo.png" style="max-width: 150px;"></a>
+                <button style="position: absolute; right: 73px;" onclick="openNav()" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i class="fa-solid fa-users"></i><span class="badge badge-warning badgeUnic" id="usercount_1"></span></button>
                 <button onclick="showSearchMobile()" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i class="fa-solid fa-magnifying-glass"></i></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                </div>
 
                 <!-- Invite to room -->
                 <div class="row hideinvite">
                   <div class="input-group flex-nowrap">
+                    <button id="notsync" style="display:none;" class="btn btn-warning individualbutton" type="button"><i class="fa-solid fa-triangle-exclamation fa-beat-fade"></i></button>
+                    <button class="btn btn-primary individualbutton" onclick="openNav()" type="button"><i class="fa-solid fa-users"></i><span class="badge badge-warning badgeUnic" id="usercount_2"></span></button>
                     <input type="text" class="form-control" placeholder="Invite" id="textToCopy">
                     <button type="button" id="copyButton" class="btn btn-primary"><i class="fa-solid fa-copy"></i></button>
                   </div>
@@ -58,12 +60,20 @@
 
         <!-- Page Content-->
         <div class="container px-4 px-lg-5 mtop">
+
+          <!-- Sidebar -->
+          <div id="mySidebar" class="sidebar">
+            <p style="margin-top: -34px; padding-left: 17px;">Synchronization:</p>
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+            <div class="row col-lg-12" id="timelog" style="padding:10px;">
+            </div>
+          </div>
+
             <div class="row col-lg-12">
                 <!-- Heading Row-->
                 <div class="row col-lg-8">
                     <div class="col-lg-12">
-
-                      <div style="padding-top: 12px; padding-bottom: 16px;" class="searchvideo" id="searchvideo">
+                       <div style="padding-top: 12px; padding-bottom: 16px;" class="searchvideo" id="searchvideo">
                         <div class="input-group flex-nowrap">
                           <select onchange="clearSearchbar()" class="form-select searchvideoselect" id="videotype">
                             <option value="mp4">MP4</option>

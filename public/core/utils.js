@@ -103,7 +103,6 @@ function getUsername()
 */
 function userJoin(message)
 {
-
     let template = `
     <div class="d-flex flex-row justify-content-end">
         <div>
@@ -123,6 +122,11 @@ function updateUsersList(users)
     // Limpa os users todos.
     document.getElementById("online_users").innerHTML = "";
 
+    // Contar o numero de utilizadores
+    const count = Object.keys(users).length;
+    document.getElementById("usercount_2").innerHTML = count;
+    document.getElementById("usercount_1").innerHTML = count;
+
     for (const key in users) {
     if (users.hasOwnProperty(key)) {
 
@@ -137,6 +141,55 @@ function updateUsersList(users)
         document.getElementById("online_users").insertAdjacentHTML('beforeend', template);
     }
     }
+}
+
+/* 
+    Atualiza a lista de tempos
+    ####################################################################
+*/
+function timeLog(syncdata)
+{
+    document.getElementById("timelog").innerHTML = "";
+    let currentTimeArray = [];
+
+    for (const key1 in syncdata) {
+      if (syncdata.hasOwnProperty(key1)) {
+        const innerObject = syncdata[key1];
+        for (const key2 in innerObject.clients) {
+          if (innerObject.clients.hasOwnProperty(key2)) {
+
+            const client = innerObject.clients[key2];
+            currentTimeArray.push(client.currentTime);
+  
+            let template = `
+            <div class="card" style="margin-bottom:5px;">
+              <div class="card-body">
+                <h5 class="card-title" style="color: #0d6efd; font-size: 12pt; margin-bottom: 0px;">`+client.username+`</h5>
+                <p class="card-text" style="font-size: 8pt;">currentTime: `+client.currentTime+`</p>
+              </div>
+            </div>`;
+            document.getElementById("timelog").insertAdjacentHTML('beforeend', template);
+  
+          }
+        }
+      }
+    }
+
+    // Check for at least 5 seconds difference
+    if (currentTimeArray.length >= 2) {
+
+        const minTime = Math.min(...currentTimeArray);
+        const maxTime = Math.max(...currentTimeArray);
+        const timeDifference = maxTime - minTime;
+        
+        if (timeDifference >= 5) {
+
+            document.getElementById("notsync").style.display = "block";
+        } else {
+            document.getElementById("notsync").style.display = "none";
+        }
+
+    } else { }
 }
 
 /* 
@@ -281,8 +334,5 @@ function checkUserName(socket, realRoomID)
     });
 }
 
-   
-
-
 // Faz o export dos modulos
-export default {updateUsersList, isTyping, setVideoHistory, writeReceivedSystemMessage, setUsername, checkUserName, sendMessage, scrollChatBottom, userJoin, userQuit, extractValueFromURL, updateInfo, getUsername, writeMessageMine, writeReceivedMessage};
+export default {timeLog, updateUsersList, isTyping, setVideoHistory, writeReceivedSystemMessage, setUsername, checkUserName, sendMessage, scrollChatBottom, userJoin, userQuit, extractValueFromURL, updateInfo, getUsername, writeMessageMine, writeReceivedMessage};
