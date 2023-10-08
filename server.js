@@ -155,14 +155,25 @@ io.on('connection', (socket) => {
 
   // Handle user disconnection
   socket.on('disconnect', () => {
-       const username = roomdata[getIDRoom(socket.id)].socketIdToUsername[socket.id];
-       if (username) {
-         console.log(`${username} disconnected.`);
-         delete roomdata[getIDRoom(socket.id)].socketIdToUsername[socket.id];
-         delete syncdata[getIDRoom(socket.id)].clients[socket.id];
-         io.to(getIDRoom(socket.id)).emit('UserDisconnected', username);
-         io.to(getIDRoom(socket.id)).emit('updateUsersList', roomdata[getIDRoom(socket.id)].socketIdToUsername);
-       }
+
+    const roomId_ex = getIDRoom(socket.id);
+    const room_ex = roomdata[roomId_ex];
+
+    if (room_ex && room_ex.socketIdToUsername && room_ex.socketIdToUsername[socket.id]) {
+      const username = roomdata[getIDRoom(socket.id)].socketIdToUsername[socket.id];
+      if (username) {
+        console.log(`${username} disconnected.`);
+        delete roomdata[getIDRoom(socket.id)].socketIdToUsername[socket.id];
+        delete syncdata[getIDRoom(socket.id)].clients[socket.id];
+        io.to(getIDRoom(socket.id)).emit('UserDisconnected', username);
+        io.to(getIDRoom(socket.id)).emit('updateUsersList', roomdata[getIDRoom(socket.id)].socketIdToUsername);
+      }
+    } 
+
+
+
+      
+
   });
 
 });
