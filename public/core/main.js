@@ -4,7 +4,11 @@
 
     localStorage.removeItem('username');
     var socket = "";
-    const startConnection = () => { socket = io.connect();  };
+    const socketOptions = {
+      pingInterval: 30000, // Set your desired ping interval in milliseconds (e.g., 30 seconds)
+      pingTimeout: 60000,  // Set your desired ping timeout in milliseconds (e.g., 60 seconds)
+    };
+    const startConnection = () => { socket = io.connect(socketOptions);  };
     var video = new Plyr('#player', {autoplay: false,muted: true});
 
     // Variaveis & Configss
@@ -155,8 +159,6 @@
     // Quando um utilizador entra, atualiza o video para o tempo atual
     // ------------------------------------------------------------------
     socket.on('catchUp', (latestTime, latestSource) => { 
-      console.log(latestTime);
-      console.log(latestSource);
       switch (latestSource.videotype) {
         case 'mp4':
           if(String(video.source) != String(latestSource.videourl)) {

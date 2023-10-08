@@ -98,6 +98,7 @@ io.on('connection', (socket) => {
   socket.on('changeSource', ( videoID, roomID, videotype) => {
     io.to(roomID).emit('changeSource',  videoID, videotype);
     roomdata[getIDRoom(socket.id)].latestSource = {videourl:videoID, videotype:videotype};
+    roomdata[getIDRoom(socket.id)].latestTime = 0;
   });
 
   // User Is Typing
@@ -112,6 +113,7 @@ io.on('connection', (socket) => {
 
   // Log Time
   socket.on('logCurrentTime', (roomID, currentTime, username, socketid) => {
+    
     const roomId = getIDRoom(socket.id);
     const syncdataRoom = syncdata[roomId];
     
@@ -159,7 +161,6 @@ io.on('connection', (socket) => {
     io.to(roomID).emit('UserJoinedRoom', username);
     roomdata[roomID].socketIdToUsername[socket.id] = username;
     io.to(roomID).emit('updateUsersList', roomdata[roomID].socketIdToUsername);
-    console.log(roomdata[roomID].socketIdToUsername);
   });
 
   // Handle user disconnection
