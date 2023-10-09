@@ -58,6 +58,28 @@
           </div>
         </div>
 
+        <!-- Modal Name -->
+        <div class="modal fade" id="reconnectModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content" style="color: white;">
+              <div class="modal-header" style="border-color: #0c1e31;">
+                
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Disconnected</h1></div>
+              <div class="modal-body">
+                <form>
+                  <div class="mb-3">
+                    <p style="text-align: center;">It seems you were disconnected, please click button below to reconnect.</p>
+                    
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer" style="border-color: #0c1e31;">
+                <button type="button" onclick="location.reload()" class="btn btn-primary">Reconnect</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Page Content-->
         <div class="container px-4 px-lg-5 mtop">
 
@@ -103,8 +125,8 @@
                     </div>
                 </div>
                 <div class="row col-lg-4">
-                    <div class="col-lg-12 paddingresp" style="background-color: #0a0f13;">
 
+                    <div class="col-lg-12 paddingresp" style="background-color: #0a0f13;">
                         <ul class="nav nav-tabs navbarmobile" role="tablist">
                             <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#chat">Chat</a>
@@ -194,6 +216,24 @@
         <script type="module" src="core/main.js"></script>
         <script>
           var usernameModal = new bootstrap.Modal(document.getElementById('UsernameModal'), { backdrop: 'static', keyboard: false  });
+          var reconnectModal = new bootstrap.Modal(document.getElementById('reconnectModal'), { backdrop: 'static', keyboard: false  });
+
+        // Function to handle visibility change
+        function handleVisibilityChange() {
+            if (document.hidden) {
+              reconnectModal.show();
+            }
+        }
+
+
+        // Check if the device is a mobile
+        const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
+
+        // Add event listener conditionally for mobile
+        if (isMobile) {
+          document.addEventListener("visibilitychange", handleVisibilityChange);
+        }
+
         </script>
     </body>
 </html>
