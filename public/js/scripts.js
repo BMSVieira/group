@@ -40,12 +40,25 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Abre sync
 function openNav() {
     document.getElementById("mySidebar").style.width = "250px";
     document.getElementById("mySidebar").style.marginLeft = "0px";
   }
   
+// Fecha sync
 function closeNav() {
     document.getElementById("mySidebar").style.width = "250px";
     document.getElementById("mySidebar").style.marginLeft = "-250px";
+}
+
+// Função para verificar a visibilidade
+function handleVisibilityChange() {
+    if (document.hidden) {
+        reconnectModal.show();
+    }
+}
+const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
+if (isMobile) {
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 }

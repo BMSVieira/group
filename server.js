@@ -55,6 +55,16 @@ io.on('connection', (socket) => {
     } else { // Caso não exista
 
       const roomID = generateRoomID(); 
+
+      if (!roomdata[roomID]) {
+        roomdata[roomID] = {
+          latestTime: 0,
+          latestSource: "youtube",
+          socketIdToUsername: {},
+          owner: socket.id
+        };
+      }
+
       // Criar room nova
       rooms.set(roomID, [socket.id]);
       // Entrar
@@ -70,13 +80,7 @@ io.on('connection', (socket) => {
     
     io.to(getIDRoom(socket.id)).emit('updateInfo', getIDRoom(socket.id));
 
-    if (!roomdata[getIDRoom(socket.id)]) {
-      roomdata[getIDRoom(socket.id)] = {
-        latestTime: 0,
-        latestSource: "youtube",
-        socketIdToUsername: {}
-      };
-    }
+
 
     if (!syncdata[getIDRoom(socket.id)]) {
       syncdata[getIDRoom(socket.id)] = {
@@ -179,12 +183,6 @@ io.on('connection', (socket) => {
         io.to(getIDRoom(socket.id)).emit('updateUsersList', roomdata[getIDRoom(socket.id)].socketIdToUsername);
       }
     } 
-
-
-
-      
-
   });
-
 });
 

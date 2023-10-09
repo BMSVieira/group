@@ -217,23 +217,6 @@
         <script>
           var usernameModal = new bootstrap.Modal(document.getElementById('UsernameModal'), { backdrop: 'static', keyboard: false  });
           var reconnectModal = new bootstrap.Modal(document.getElementById('reconnectModal'), { backdrop: 'static', keyboard: false  });
-
-        // Function to handle visibility change
-        function handleVisibilityChange() {
-            if (document.hidden) {
-              reconnectModal.show();
-            }
-        }
-
-
-        // Check if the device is a mobile
-        const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
-
-        // Add event listener conditionally for mobile
-        if (isMobile) {
-          document.addEventListener("visibilitychange", handleVisibilityChange);
-        }
-
         </script>
     </body>
 </html>
