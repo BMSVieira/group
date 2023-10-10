@@ -117,7 +117,7 @@ function userJoin(message)
     Atualiza a lista de utilizadores
     ####################################################################
 */
-function updateUsersList(users)
+function updateUsersList(users, owner)
 {
     // Limpa os users todos.
     document.getElementById("online_users").innerHTML = "";
@@ -132,10 +132,16 @@ function updateUsersList(users)
 
         const value = users[key];
 
+        console.log(key);
+        console.log(owner);
+
+        let ownerVariable = "";
+        if(key === owner){ ownerVariable = "isowner"; } else { ownerVariable = "";}
+
         // Template
         const template = `
         <div class="row col-sm-3 user_unic">
-        <div class="username_online">`+value+`</div>
+        <div class="username_online `+ownerVariable+`">`+value+`</div>
         </div>`;
 
         document.getElementById("online_users").insertAdjacentHTML('beforeend', template);

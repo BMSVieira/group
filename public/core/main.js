@@ -54,8 +54,8 @@
 
     // Atualizar lista de utilizadores na sala
     // ------------------------------------------------------------------
-    socket.on('updateUsersList', (users) => { 
-      utils.updateUsersList(users);});
+    socket.on('updateUsersList', (users, owner) => { 
+      utils.updateUsersList(users, owner);});
 
     // Utilizador desconectou-se
     // ------------------------------------------------------------------
@@ -159,6 +159,9 @@
     // Quando um utilizador entra, atualiza o video para o tempo atual
     // ------------------------------------------------------------------
     socket.on('catchUp', (latestTime, latestSource) => { 
+
+      console.log(latestTime);
+      console.log(latestSource);
       switch (latestSource.videotype) {
         case 'mp4':
           if(String(video.source) != String(latestSource.videourl)) {

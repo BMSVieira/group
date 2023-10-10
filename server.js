@@ -22,6 +22,22 @@ function getIDRoom(socketid)
   }
   return foundKey;
 }
+
+// Find next room owner
+function findNextOwner(roomId) {
+  const room = roomdata[roomId];
+  if (!room) {
+    return null;
+  }
+  const socketIds = Object.keys(room.socketIdToUsername);
+  for (const socketId of socketIds) {
+    if (socketId !== room.owner) {
+      return socketId;
+    }
+  }
+  return null;
+}
+
 app.use(express.static(__dirname + '/public')); 
 
 // Redirect / to our index.html file
@@ -73,14 +89,14 @@ io.on('connection', (socket) => {
       socket.emit('createdRoom', roomID);
     }
 
+    console.log(roomdata);
+
     // SetTimeOut arbitrário | Corrigir depois.
     setTimeout(() => {
       io.to(getIDRoom(socket.id)).emit('catchUp', roomdata[getIDRoom(socket.id)].latestTime, roomdata[getIDRoom(socket.id)].latestSource);
     }, "5000");
     
     io.to(getIDRoom(socket.id)).emit('updateInfo', getIDRoom(socket.id));
-
-
 
     if (!syncdata[getIDRoom(socket.id)]) {
       syncdata[getIDRoom(socket.id)] = {
@@ -92,7 +108,6 @@ io.on('connection', (socket) => {
       isRunning = 1;
       setInterval(() => {
         io.to(getIDRoom(socket.id)).emit('updateLogTime', syncdata);
-        // console.log(util.inspect(syncdata, {showHidden: false, depth: null, colors: true}))
       }, "1000");
     }
     
@@ -132,6 +147,21 @@ io.on('connection', (socket) => {
         currentTime: currentTime,
       };
     }
+
+    if (syncdataRoom) {
+      if (roomdata[roomId]) {
+        const ownerSocketID = roomdata[roomId].owner;
+        if (syncdataRoom.clients[ownerSocketID]) {
+          const ownerSyncData = syncdataRoom.clients[ownerSocketID].currentTime;
+          roomdata[getIDRoom(socket.id)].latestTime = ownerSyncData;
+        } else {
+          console.log('Owner sync data not found.');
+        }
+      } else {
+        console.log('Room not found in roomdata.');
+      }
+    }
+
   });
 
   // Send Playing Message
@@ -164,7 +194,7 @@ io.on('connection', (socket) => {
   socket.on('UserJoinedRoom', (roomID, username) => {
     io.to(roomID).emit('UserJoinedRoom', username);
     roomdata[roomID].socketIdToUsername[socket.id] = username;
-    io.to(roomID).emit('updateUsersList', roomdata[roomID].socketIdToUsername);
+    io.to(roomID).emit('updateUsersList', roomdata[roomID].socketIdToUsername , roomdata[roomID].owner);
   });
 
   // Handle user disconnection
@@ -176,13 +206,24 @@ io.on('connection', (socket) => {
     if (room_ex && room_ex.socketIdToUsername && room_ex.socketIdToUsername[socket.id]) {
       const username = roomdata[getIDRoom(socket.id)].socketIdToUsername[socket.id];
       if (username) {
+
         console.log(`${username} disconnected.`);
+
         delete roomdata[getIDRoom(socket.id)].socketIdToUsername[socket.id];
         delete syncdata[getIDRoom(socket.id)].clients[socket.id];
         io.to(getIDRoom(socket.id)).emit('UserDisconnected', username);
-        io.to(getIDRoom(socket.id)).emit('updateUsersList', roomdata[getIDRoom(socket.id)].socketIdToUsername);
+
+       // Transfere a ownership para outro user se existir
+       if(socket.id === roomdata[roomId_ex].owner)
+       {
+          const nextOwnerId = findNextOwner(roomId_ex);
+          if(nextOwnerId) { roomdata[roomId_ex].owner = nextOwnerId; }
+       }
+
+       io.to(getIDRoom(socket.id)).emit('updateUsersList', roomdata[getIDRoom(socket.id)].socketIdToUsername, roomdata[getIDRoom(socket.id)].owner);
       }
     } 
   });
+
 });
 

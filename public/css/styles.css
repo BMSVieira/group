@@ -106,6 +106,12 @@
   justify-content: center;
 }
 
+.isowner
+{
+  background-color: #fdc10d!important;
+  color: black!important;
+}
+
 .username_online
 {
   position: absolute;
