@@ -75,7 +75,7 @@ io.on('connection', (socket) => {
       if (!roomdata[roomID]) {
         roomdata[roomID] = {
           latestTime: 0,
-          latestSource: "youtube",
+          latestSource: { videourl: 'sX1Y2JMK6g8', videotype: 'youtube' },
           socketIdToUsername: {},
           owner: socket.id
         };

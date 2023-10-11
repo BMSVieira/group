@@ -57,8 +57,8 @@ function updateInfo(roomID, type) {
             // Obter o dominio
             const currentDomain = window.location.hostname;
 
-            document.getElementById("inviteRoom").value = currentDomain+":3000/room="+roomID+"";
-            document.getElementById("textToCopy").value = currentDomain+":3000/room="+roomID+"";
+            document.getElementById("inviteRoom").value = currentDomain+"/room="+roomID+"";
+            document.getElementById("textToCopy").value = currentDomain+"/room="+roomID+"";
             document.getElementById("idRoom").value = ""+roomID+"";
             
           break;
