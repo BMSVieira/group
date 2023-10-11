@@ -88,8 +88,8 @@
 
     // Update time log
     // ------------------------------------------------------------------
-    socket.on('updateLogTime', (syncdata) => {  
-      utils.timeLog(syncdata);
+    socket.on('updateLogTime', (syncdata, owner) => {  
+      utils.timeLog(syncdata, owner);
     });
 
     // Quando um utilizador entra, atualiza o video para o tempo atual

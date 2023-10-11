@@ -112,6 +112,11 @@
   color: black!important;
 }
 
+.sync_owner
+{
+  color: #fdc10d!important;
+}
+
 .username_online
 {
   position: absolute;

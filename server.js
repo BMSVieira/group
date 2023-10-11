@@ -107,7 +107,7 @@ io.on('connection', (socket) => {
     if(isRunning == 0) {
       isRunning = 1;
       setInterval(() => {
-        io.to(getIDRoom(socket.id)).emit('updateLogTime', syncdata);
+        io.to(getIDRoom(socket.id)).emit('updateLogTime', syncdata, roomdata[getIDRoom(socket.id)].owner);
       }, "1000");
     }
     

@@ -153,7 +153,7 @@ function updateUsersList(users, owner)
     Atualiza a lista de tempos
     ####################################################################
 */
-function timeLog(syncdata)
+function timeLog(syncdata, owner)
 {
     document.getElementById("timelog").innerHTML = "";
     let currentTimeArray = [];
@@ -166,11 +166,14 @@ function timeLog(syncdata)
 
             const client = innerObject.clients[key2];
             currentTimeArray.push(client.currentTime);
+            
+            let ownerVariableSync = "";
+            if(client.socket === owner){ ownerVariableSync = "sync_owner"; } else { ownerVariableSync = "";}
   
             let template = `
             <div class="card" style="margin-bottom:5px;">
               <div class="card-body">
-                <h5 class="card-title" style="color: #0d6efd; font-size: 12pt; margin-bottom: 0px;">`+client.username+`</h5>
+                <h5 class="card-title `+ownerVariableSync+`" style="color: #0d6efd; font-size: 12pt; margin-bottom: 0px;">`+client.username+`</h5>
                 <p class="card-text" style="font-size: 8pt;">currentTime: `+client.currentTime+`</p>
               </div>
             </div>`;
