@@ -130,27 +130,6 @@
 
     socket.on('play', (roomID) => { video.play(); });
     
-    // Control buffering
-    // ------------------------------------------------------------------
-    let slowInternetTimeout = null;
-    let threshold = 500; //ms after which user perceives buffering
-    
-    video.on('waiting', () => {
-        slowInternetTimeout = setTimeout(() => {
-            //show buffering
-            console.log("buffering");
-            socket.emit('pause', realRoomID);
-        }, threshold);
-    });
-    video.on('playing', () => {
-        if(slowInternetTimeout != null){
-            clearTimeout(slowInternetTimeout);
-            slowInternetTimeout = null;
-            console.log("not buffering anymore");
-            socket.emit('play', realRoomID);
-        }
-    });
-
     // Seek Video
     // ------------------------------------------------------------------
     let previousTime = 0;
