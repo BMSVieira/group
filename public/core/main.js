@@ -130,16 +130,16 @@
 
     socket.on('play', (roomID) => { video.play(); });
     
-
-
-    let slowInternetTimeout = null;
-
+    // Control buffering
+    // ------------------------------------------------------------------
+    /* let slowInternetTimeout = null;
     let threshold = 500; //ms after which user perceives buffering
     
     video.on('waiting', () => {
         slowInternetTimeout = setTimeout(() => {
             //show buffering
             console.log("buffering");
+            socket.emit('pause', realRoomID);
         }, threshold);
     });
     video.on('playing', () => {
@@ -147,12 +147,9 @@
             clearTimeout(slowInternetTimeout);
             slowInternetTimeout = null;
             console.log("not buffering anymore");
+            socket.emit('play', realRoomID);
         }
-    });
-
-
-
-
+    }); */
 
     // Seek Video
     // ------------------------------------------------------------------
@@ -169,7 +166,6 @@
         clearTimeout(timeoutId); // Clear any previous timeout
         timeoutId = setTimeout(() => {
           socket.emit('seek', realRoomID, video.currentTime);
-          console.log("detected");
         }, 2000); // Adjust the debounce time as needed
       }
 
@@ -183,9 +179,6 @@
     // Quando um utilizador entra, atualiza o video para o tempo atual
     // ------------------------------------------------------------------
     socket.on('catchUp', (latestTime, latestSource) => { 
-
-      console.log(latestTime);
-      console.log(latestSource);
       switch (latestSource.videotype) {
         case 'mp4':
           if(String(video.source) != String(latestSource.videourl)) {
