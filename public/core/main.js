@@ -132,7 +132,7 @@
     
     // Control buffering
     // ------------------------------------------------------------------
-    /* let slowInternetTimeout = null;
+    let slowInternetTimeout = null;
     let threshold = 500; //ms after which user perceives buffering
     
     video.on('waiting', () => {
@@ -149,7 +149,7 @@
             console.log("not buffering anymore");
             socket.emit('play', realRoomID);
         }
-    }); */
+    });
 
     // Seek Video
     // ------------------------------------------------------------------
